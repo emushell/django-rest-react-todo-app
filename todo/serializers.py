@@ -9,6 +9,7 @@ class TaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
         fields = '__all__'
+        extra_kwargs = {'user_profile': {'read_only': True}}
 
 
 class ProfileSerializer(serializers.ModelSerializer):
@@ -30,7 +31,7 @@ class UserSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField(style={'input_type': 'password'}, write_only=True)
 
     def create(self, validated_data):
-        user = User(
+        user = User.objects.create(
             email=self.validated_data['email'],
             username=self.validated_data['username'],
         )
