@@ -68,5 +68,5 @@ def api_root(request, format=None):
         'profiles': reverse('profile-list', request=request, format=format),
         'tasks': reverse('task-list', request=request, format=format),
         'register': reverse('create-user', request=request, format=format),
-        'login': reverse('login', request=request, format=format),
+        # 'login': reverse('login', request=request, format=format),
     })

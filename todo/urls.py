@@ -1,5 +1,5 @@
 from django.urls import path
-from rest_framework.authtoken import views as rest_views
+# from rest_framework.authtoken import views as rest_views
 from . import views
 
 urlpatterns = [
@@ -9,6 +9,6 @@ urlpatterns = [
     path('profiles/<int:pk>/', views.ProfileDetail.as_view(), name='profile-detail'),
 
     path('register/', views.UserCreate.as_view(), name='create-user'),
-    path('login/', rest_views.obtain_auth_token, name='login'),
+    # path('login/', rest_views.obtain_auth_token, name='login'),
     path('', views.api_root),
 ]
