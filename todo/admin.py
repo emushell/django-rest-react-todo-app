@@ -1,15 +1,15 @@
 from django.contrib import admin
-from .models import Task, Profile
+from .models import Task, UserProfile
 
 
 class TaskAdmin(admin.ModelAdmin):
     pass
 
 
-class ProfileAdmin(admin.ModelAdmin):
+class UserProfileAdmin(admin.ModelAdmin):
     pass
 
 
 # Register your models here.
 admin.site.register(Task, TaskAdmin)
-admin.site.register(Profile, ProfileAdmin)
+admin.site.register(UserProfile, UserProfileAdmin)
