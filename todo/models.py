@@ -3,10 +3,13 @@ from django.conf import settings
 from django.db import models, transaction
 from django.utils.crypto import get_random_string
 from django.core.mail import EmailMultiAlternatives
+from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import get_user_model
 from django.template.loader import render_to_string
+from django.contrib.auth.tokens import default_token_generator
 
 from base import models as base_models
+from base import utils as base_utils
 
 User = get_user_model()
 
@@ -48,32 +51,48 @@ class UserProfileRegistrationManager(models.Manager):
 
         username = getattr(user, User.USERNAME_FIELD)
         hash_input = (get_random_string(5) + username + get_random_string(5)).encode('utf-8')
-        user_verification_key = hashlib.sha1(hash_input).hexdigest()
+        user_verification_token = hashlib.sha1(hash_input).hexdigest()
 
         user_profile = self.create(
             user=user,
             first_name=user.first_name,
             last_name=user.last_name,
             email=user.email,
-            verification_key=user_verification_key
+            verification_token=user_verification_token
         )
         return user_profile
 
-    def activate_user(self, verification_key):
-        print(verification_key)
+    def activate_user(self, verification_token):
+        """
+        Activate user if token is valid.
+        :param verification_token:
+        :return:
+        """
+        try:
+            user_profile = self.get(verification_token=verification_token)
+        except ObjectDoesNotExist:
+            return None
+
+        user_profile.verification_token = UserProfile.VERIFIED
+        user_profile.is_email_verified = True
+        user_profile.save()
+        return user_profile.user
 
 
 class UserProfile(base_models.CreatedUpdatedModel, Verification):
     """
     Custom user profile class
     """
+
+    VERIFIED = "VERIFIED"
+
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=255, null=True)
     last_name = models.CharField(max_length=255, null=True)
     phone = models.CharField(max_length=255, null=True, blank=True)
     email = models.CharField(max_length=255, null=False)
     profile_pic = models.ImageField(default="default-profile-pic.png", upload_to="media", null=True, blank=True)
-    verification_key = models.CharField(max_length=100)
+    verification_token = models.CharField(max_length=100)
 
     objects = UserProfileRegistrationManager()
 
@@ -85,10 +104,10 @@ class UserProfile(base_models.CreatedUpdatedModel, Verification):
     def send_email(self, site):
         context = {
             'site': site,
-            'verification_key': self.verification_key,
+            'verification_token': self.verification_token,
             'user': self.user,
             'site_name': getattr(settings, 'SITE_NAME', None),
-            'expiration_days': getattr(settings, 'VERIFICATION_KEY_EXPIRY_DAYS', 4),
+            'expiration_days': getattr(settings, 'VERIFICATION_TOKEN_EXPIRY_DAYS', 4),
         }
 
         subject = render_to_string('todo/registration_email_subject.html', context)
@@ -96,8 +115,34 @@ class UserProfile(base_models.CreatedUpdatedModel, Verification):
 
         content = render_to_string('todo/registration_email_content.html', context)
 
-        msg = EmailMultiAlternatives(subject, "", to=["emushell8@gmail.com"])
+        msg = EmailMultiAlternatives(subject, "", to=[self.user.email])
         msg.attach_alternative(content, "text/html")
+        msg.send()
+
+    def send_password_reset_email(self, site):
+        """
+        Send email to user with password reset link
+        :param site:
+        :return:
+        """
+
+        context = {
+            'email': self.user.email,
+            'site': site,
+            'site_name': getattr(settings, 'SITE_NAME', None),
+            'uid': base_utils.base36encode(self.user.pk),
+            'user': self.user,
+            'token': default_token_generator.make_token(self.user)
+        }
+
+        subject = render_to_string('todo/password_reset_email_subject.html', context)
+
+        subject = ''.join(subject.splitlines())
+
+        message = render_to_string('todo/password_reset_email_content.html', context)
+
+        msg = EmailMultiAlternatives(subject, "", to=[self.user.email])
+        msg.attach_alternative(message, 'text/html')
         msg.send()
 
     def __str__(self):

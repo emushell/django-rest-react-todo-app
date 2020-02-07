@@ -9,8 +9,9 @@ urlpatterns = [
     path('profiles/<int:pk>/', views.ProfileDetail.as_view(), name='profile-detail'),
 
     path('register/', views.UserCreate.as_view(), name='create-user'),
-    path('email-verification/<str:verification_key>/', views.UserEmailVerification.as_view(),
+    path('email-verification/<str:verification_token>/', views.UserEmailVerification.as_view(),
          name='email-verification'),
+    path('password-reset/', views.PasswordResetView.as_view(), 'password-reset'),
     # path('login/', rest_views.obtain_auth_token, name='login'),
     path('', views.api_root),
 ]

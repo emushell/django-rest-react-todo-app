@@ -1,8 +1,11 @@
 from rest_framework import serializers
 # from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
+from django.contrib.auth.tokens import default_token_generator
 from .models import Task, UserProfile
 from django.contrib.auth import get_user_model
+
+from base import utils as base_utils
 
 User = get_user_model()
 
@@ -60,19 +63,6 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             send_email=True
         )
 
-        # user = User.objects.create(
-        #     email=self.validated_data['email'],
-        #     username=self.validated_data['username'],
-        # )
-
-        # password = self.validated_data['password']
-        # password2 = self.validated_data['password2']
-        #
-        # if password != password2:
-        #     raise serializers.ValidationError({'password': 'Passwords must match.'})
-        # user.set_password(self.validated_data['password'])
-        # user.save()
-
         return user
 
     class Meta:
@@ -83,3 +73,66 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
                 'write_only': True
             }
         }
+
+
+class PasswordResetSerializer(serializers.Serializer):
+    email = serializers.EmailField(
+        required=True
+    )
+
+    def update(self, instance, validated_data):
+        pass
+
+    def create(self, validated_data):
+        pass
+
+
+class PasswordResetConfirmSerializer(serializers.Serializer):
+    token_generator = default_token_generator
+
+    def __init__(self, *args, **kwargs):
+        context = kwargs['context']
+        uidb64 = context.get('uidb64')
+        token = context.get('token')
+        if uidb64 and token:
+            uid = base_utils.base36decode(uidb64)
+            self.user = self.get_user(uid)
+            self.valid_attempt = self.token_generator.check_token(self.user, token)
+        super().__init__(*args, **kwargs)
+
+    def get_user(self, uid):
+        try:
+            user = User.objects.get(pk=uid)
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            user = None
+        return user
+
+    new_password = serializers.CharField(
+        style={'input_type': 'password'},
+        label="New Password",
+        write_only=True
+    )
+
+    new_password2 = serializers.CharField(
+        style={'input_type': 'password'},
+        label="Confirm Password",
+        write_only=True
+    )
+
+    def validate_new_password2(self, value):
+        data = self.get_initial()
+        new_password = data.get('new_password')
+        if new_password != value:
+            raise serializers.ValidationError("Passwords doesn't match.")
+        return value
+
+    def validate(self, attrs):
+        if not self.valid_attempt:
+            raise serializers.ValidationError("Operation not allowed.")
+        return attrs
+
+    def update(self, instance, validated_data):
+        pass
+
+    def create(self, validated_data):
+        pass
