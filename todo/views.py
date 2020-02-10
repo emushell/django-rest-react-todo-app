@@ -1,5 +1,5 @@
-from rest_framework import generics, status, views
 from django.contrib.sites.shortcuts import get_current_site
+from rest_framework import generics, status, views
 from rest_framework.permissions import AllowAny
 # from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
@@ -7,7 +7,8 @@ from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from .models import Task, UserProfile
 # from .permissions import IsOwnerOrReadOnly
-from .serializers import TaskSerializer, ProfileSerializer, UserRegistrationSerializer, PasswordResetSerializer
+from .serializers import TaskSerializer, ProfileSerializer, UserRegistrationSerializer, PasswordResetSerializer, \
+    PasswordResetConfirmSerializer
 
 
 # Create your views here.
@@ -50,17 +51,6 @@ class UserCreate(generics.CreateAPIView):
     permission_classes = (AllowAny,)
     serializer_class = UserRegistrationSerializer
 
-    # def post(self, request, *args, **kwargs):
-    #     serializer = self.get_serializer(data=request.data)
-    #     serializer.is_valid(raise_exception=True)
-    #     self.perform_create(serializer)
-    #     user = serializer.instance
-    #     token, created = Token.objects.get_or_create(user=user)
-    #     data = serializer.data
-    #     data["token"] = token.key
-    #     headers = self.get_success_headers(serializer.data)
-    #     return Response(data, status=status.HTTP_201_CREATED, headers=headers)
-
 
 class UserEmailVerification(generics.RetrieveAPIView):
     """
@@ -88,9 +78,8 @@ class PasswordResetView(views.APIView):
 
     def post(self, request):
 
-        user_profile = self.get_user_profile(request.data.email)
+        user_profile = self.get_user_profile(request.data['email'])
         if user_profile:
-            # TODO send password reset email
             user_profile.send_password_reset_email(
                 site=get_current_site(request)
             )
@@ -105,7 +94,32 @@ class PasswordResetView(views.APIView):
             return None
         return user_profile
 
-# TODO implement password reset confirm view.
+
+class PasswordResetConfirmationView(views.APIView):
+    """
+    Password reset confirmation endpoint.
+    """
+
+    permission_classes = (AllowAny,)
+    serializer_class = PasswordResetConfirmSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(
+            data=request.data,
+            context={
+                'uidb64': kwargs['uidb64'],
+                'token': kwargs['token']
+            }
+        )
+
+        if serializer.is_valid(raise_exception=True):
+            new_password = serializer.validated_data.get('new_password')
+            user = serializer.user
+            user.set_password(new_password)
+            user.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['GET'])
 @permission_classes([AllowAny, ])
