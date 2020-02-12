@@ -1,8 +1,14 @@
+import json
 from django.urls import reverse
+from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+from ..models import Task
+from ..serializers import TaskSerializer
 from todo.tests.mixins import CreateUserProfileMixin
+
+User = get_user_model()
 
 
 class RegistrationTestCase(APITestCase):
@@ -61,9 +67,9 @@ class ProfileDetailTestCase(APITestCase, CreateUserProfileMixin):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
-class TaskListCreateAPIVieTest(APITestCase, CreateUserProfileMixin):
-    url = reverse("todo:task-list")
-    url_login = reverse("login")
+class TaskListTestCase(APITestCase, CreateUserProfileMixin):
+    login_url = reverse("login")
+    task_list_url = reverse("todo:task-list")
 
     def setUp(self):
         self.create_user_profile()
@@ -71,9 +77,89 @@ class TaskListCreateAPIVieTest(APITestCase, CreateUserProfileMixin):
             'username': self.user.username,
             'password': 'total_secret'
         }
+        response = self.client.post(self.login_url, self.data, format='json')
+        self.jwt_token = response.data['access']
+        self.api_authentication()
+
+    def api_authentication(self):
+        self.client.credentials(HTTP_AUTHORIZATION="Bearer {}".format(self.jwt_token))
 
     def test_create_task(self):
-        self.assertEqual(self.user.is_active, True, 'Active User')
+        response = self.client.post(self.task_list_url, {"title": "Test task!"})
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        response = self.client.post(self.url_login, self.data, format="json")
-        self.assertEqual(response.status_code, status.HTTP_200_OK, response.content)
+    def test_user_tasks(self):
+        Task.objects.create(user_profile=self.user_profile, title="Test task!")
+        response = self.client.get(self.task_list_url)
+        self.assertTrue(len(json.loads(response.content)) == Task.objects.count())
+
+
+class TaskDetailTestCase(APITestCase, CreateUserProfileMixin):
+    login_url = reverse("login")
+
+    def setUp(self):
+        self.create_user_profile()
+        self.data = {
+            'username': self.user.username,
+            'password': 'total_secret'
+        }
+        response = self.client.post(self.login_url, self.data, format='json')
+        self.jwt_token = response.data['access']
+        self.task = Task.objects.create(user_profile=self.user_profile, title='Test task!')
+        self.task_url = reverse("todo:task-detail", kwargs={"pk": self.task.id})
+        self.api_authentication()
+
+    def api_authentication(self):
+        self.client.credentials(HTTP_AUTHORIZATION="Bearer {}".format(self.jwt_token))
+
+    def test_task_object_bundle(self):
+        response = self.client.get(self.task_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        task_serialize_data = TaskSerializer(instance=self.task).data
+        response_data = json.loads(response.content)
+        self.assertEqual(response_data, task_serialize_data)
+
+    def test_task_object_updated_authorization(self):
+        new_user = User.objects.create_user(username="test-user-2",
+                                            email="new@user.test",
+                                            password="total_secret")
+        response = self.client.post(self.login_url,
+                                    {'username': new_user.username, 'password': 'total_secret'},
+                                    format='json')
+        self.client.credentials(HTTP_AUTHORIZATION="Bearer {}".format(response.data['access']))
+
+        # HTTP PUT
+        response = self.client.put(self.task_url, {"title": "Hacked Test task!"})
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+        # HTTP PATCH
+        response = self.client.patch(self.task_url, {"title": "Hacked Test task"})
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_task_object_update(self):
+        response = self.client.put(self.task_url, {"title": "New Test Task!"})
+        response_data = json.loads(response.content)
+        task = Task.objects.get(id=self.task.id)
+        self.assertEqual(response_data.get("title"), task.title)
+
+    def test_task_object_partial_update(self):
+        response = self.client.patch(self.task_url, {"done": True})
+        response_data = json.loads(response.content)
+        task = Task.objects.get(id=self.task.id)
+        self.assertEqual(response_data.get("done"), task.done)
+
+    def test_task_object_delete_authorization(self):
+        new_user = User.objects.create_user(username="test-user-2",
+                                            email="new@user.test",
+                                            password="total_secret")
+        response = self.client.post(self.login_url,
+                                    {'username': new_user.username, 'password': 'total_secret'},
+                                    format='json')
+        self.client.credentials(HTTP_AUTHORIZATION="Bearer {}".format(response.data['access']))
+        response = self.client.delete(self.task_url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_todo_object_delete(self):
+        response = self.client.delete(self.task_url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)

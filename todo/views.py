@@ -16,7 +16,7 @@ class TaskList(generics.ListCreateAPIView):
     serializer_class = TaskSerializer
 
     def perform_create(self, serializer):
-        serializer.save(user_profile=self.request.user.profile)
+        serializer.save(user_profile=self.request.user.userprofile)
 
     def get_queryset(self):
         return Task.objects.filter(user_profile__user=self.request.user)
