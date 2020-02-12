@@ -160,10 +160,5 @@ class Task(models.Model):
     class Meta:
         db_table = 'tasks'
 
-    @classmethod
-    def create(cls, title):
-        task = cls(title=title)
-        return task
-
     def __str__(self):
         return self.title

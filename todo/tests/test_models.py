@@ -1,23 +1,10 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 
+from .mixins import CreateUserProfileMixin
 from .. import models
 
 User = get_user_model()
-
-
-class CreateUserProfileMixin:
-
-    def __init__(self, *args, **kwargs):
-        self.user = None
-        self.user_profile = None
-
-    def create_user(self, username='test_user', email='test@...', password='total_secret', *args, **kwargs):
-        self.user = User.objects.create(username=username, email=email, password=password, *args, **kwargs)
-
-    def create_user_profile(self):
-        self.create_user()
-        self.user_profile = models.UserProfile.objects.create(email=self.user.email, user=self.user)
 
 
 class UserProfileTest(TestCase, CreateUserProfileMixin):

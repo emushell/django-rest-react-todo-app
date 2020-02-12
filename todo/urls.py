@@ -12,12 +12,12 @@ urlpatterns = [
     path('profiles/<int:pk>/', views.ProfileDetail.as_view(), name='profile-detail'),
 
     path('register/', views.UserCreate.as_view(), name='create-user'),
-    path('email-verification/<slug:verification_token>/',
+    path('email-verification/<str:verification_token>/',
          views.UserEmailVerification.as_view(),
          name='email-verification'
          ),
     path('password-reset/', views.PasswordResetView.as_view(), name='password-reset'),
-    path('password-reset-confirm/<slug:uidb64>/<slug:token>/',
+    path('password-reset-confirm/<str:uidb64>/<str:token>/',
          views.PasswordResetConfirmationView.as_view(),
          name='password-reset-confirm'
          ),
