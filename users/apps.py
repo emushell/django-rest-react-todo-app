@@ -3,4 +3,4 @@ from django.apps import AppConfig
 
 class UsersConfig(AppConfig):
     name = 'users'
-    verbose_name = "TODO's application user module"
+    verbose_name = "TODO's User Module"
