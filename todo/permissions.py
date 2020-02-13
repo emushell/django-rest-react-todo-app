@@ -17,9 +17,3 @@ class UserIsOwnerTask(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
         return request.user.id == obj.user_profile.user.id
-
-
-class UserIsOwnerUserProfile(permissions.BasePermission):
-
-    def has_object_permission(self, request, view, obj):
-        return request.user.id == obj.user.id
