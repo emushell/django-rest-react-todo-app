@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from ..models import Task
+from ..models import Task, UserProfile
 from ..serializers import TaskSerializer
 from todo.tests.mixins import CreateUserProfileMixin
 
@@ -26,6 +26,50 @@ class RegistrationTestCase(APITestCase):
 
         response = self.client.post(self.register_url, data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+
+class UserEmailVerificationTestCase(APITestCase):
+
+    def setUp(self):
+        self.data = {
+            'username': 'test-user',
+            'email': 'test@localhost.test',
+            'first_name': 'test',
+            'last_name': 'user',
+            'password': 'total-secret-password',
+        }
+        self.user = UserProfile.objects.create_user_profile(data=self.data, site=None, send_email=False)
+
+    def test_verify_email(self):
+        user_profile = UserProfile.objects.get(user=self.user)
+        email_verification_url = reverse("todo:email-verification",
+                                         kwargs={"verification_token": user_profile.verification_token})
+        response = self.client.get(email_verification_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_verify_email_wrong_token(self):
+        email_verification_url = reverse("todo:email-verification",
+                                         kwargs={"verification_token": "test-token"})
+        response = self.client.get(email_verification_url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+
+class PasswordResetViewTestCase(APITestCase):
+    password_reset_url = reverse("todo:password-reset")
+
+    def setUp(self):
+        self.data = {
+            'username': 'test-user',
+            'email': 'test@localhost.test',
+            'first_name': 'test',
+            'last_name': 'user',
+            'password': 'total-secret-password',
+        }
+        self.user = UserProfile.objects.create_user_profile(data=self.data, site=None, send_email=False)
+
+    def test_password_reset(self):
+        response = self.client.post(self.password_reset_url, {"email": self.data['email']})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
 class ProfileDetailTestCase(APITestCase, CreateUserProfileMixin):

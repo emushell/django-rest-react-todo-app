@@ -1,12 +1,11 @@
 from django.contrib.sites.shortcuts import get_current_site
 from rest_framework import generics, status, views
-from rest_framework.permissions import AllowAny
-# from rest_framework.authtoken.models import Token
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from .models import Task, UserProfile
-# from .permissions import IsOwnerOrReadOnly
+from .permissions import UserIsOwnerTask, UserIsOwnerUserProfile
 from .serializers import TaskSerializer, ProfileSerializer, UserRegistrationSerializer, PasswordResetSerializer, \
     PasswordResetConfirmSerializer
 
@@ -24,6 +23,7 @@ class TaskList(generics.ListCreateAPIView):
 
 class TaskDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = TaskSerializer
+    permission_classes = (IsAuthenticated, UserIsOwnerTask,)
 
     def get_queryset(self):
         return Task.objects.filter(user_profile__user=self.request.user)
@@ -38,6 +38,7 @@ class ProfileList(generics.ListAPIView):
 
 class ProfileDetail(generics.RetrieveAPIView):
     serializer_class = ProfileSerializer
+    permission_classes = (IsAuthenticated, UserIsOwnerUserProfile,)
 
     def get_queryset(self):
         return UserProfile.objects.filter(user=self.request.user)
