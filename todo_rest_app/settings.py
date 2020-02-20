@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'webpack_loader',
     # 'rest_framework.authtoken',
     'todo.apps.TodoConfig',
     'users.apps.UsersConfig'
@@ -147,6 +148,16 @@ EMAIL_USE_TLS = env('EMAIL_USE_TLS')
 EMAIL_HOST_USER = env('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'frontend', 'build', 'static'),
+)
+
+WEBPACK_LOADER = {
+    'DEFAULT': {
+        'BUNDLE_DIR_NAME': 'frontend/build/static/',
+        'STATS_FILE': os.path.join(BASE_DIR, 'frontend', 'build', 'webpack-stats.json'),
+    },
+}
 # LOGGING = {
 #     'version': 1,
 #     'filters': {
