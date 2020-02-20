@@ -12,7 +12,7 @@ User = get_user_model()
 
 
 class TaskListTestCase(APITestCase, CreateUserProfileMixin):
-    login_url = reverse("login")
+    login_url = reverse("users:login")
     task_list_url = reverse("todo:task-list")
 
     def setUp(self):
@@ -39,7 +39,7 @@ class TaskListTestCase(APITestCase, CreateUserProfileMixin):
 
 
 class TaskDetailTestCase(APITestCase, CreateUserProfileMixin):
-    login_url = reverse("login")
+    login_url = reverse("users:login")
 
     def setUp(self):
         self.create_user_profile()

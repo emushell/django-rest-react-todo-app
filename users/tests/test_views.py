@@ -71,7 +71,7 @@ class PasswordResetViewTestCase(APITestCase):
 
 
 class ProfileDetailTestCase(APITestCase, CreateUserProfileMixin):
-    login_url = reverse("login")
+    login_url = reverse("users:login")
     list_url = reverse("users:profile-list")
 
     def setUp(self):
