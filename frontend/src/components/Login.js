@@ -33,8 +33,6 @@ class Login extends Component {
     };
 
     render() {
-        // const { userId, isAuthenticated } = this.props;
-        // console.log({ userId, isAuthenticated });
         return (
             <div className="col-md-6 offset-md-3 d-flex justify-content-center">
                 <div className="card bg-light" style={cardStyle}>
