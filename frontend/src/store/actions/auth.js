@@ -60,7 +60,11 @@ export const authenticate = (username, password) => {
                 dispatch(checkAuthTimeout(expirationTime));
             })
             .catch(error => {
-                dispatch(authFail(error));
+                const { data, status, statusText } = error.response;
+                let errorResponse = {
+                    data, status, statusText
+                };
+                dispatch(authFail(errorResponse));
             });
     };
 };

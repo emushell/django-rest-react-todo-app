@@ -1,7 +1,7 @@
-import * as actionTypes from './actionTypes';
-import axios from '../../axios-api';
+import * as actionTypes from '../actionTypes';
+import axios from '../../../axios-api';
 
-const TASKS_URL = 'api/tasks/';
+import { TASKS_URL } from '../../urls';
 
 export const tasksFetchStart = () => {
     return {
@@ -33,12 +33,5 @@ export const fetchTasks = () => {
             .catch(error => {
                 dispatch(tasksFetchFail(error));
             });
-    };
-};
-
-export const tasksUpdateDone = (taskId) => {
-    return {
-        type: actionTypes.TASKS_UPDATE_DONE,
-        taskId: taskId
     };
 };
