@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../store/actions/tasks';
+import { taskSortASC } from '../store/utils';
+
 
 const Tasks = (props) => {
     useEffect(() => {
@@ -32,11 +34,13 @@ const Tasks = (props) => {
         setNewTask({ title });
     };
 
+    const nextPath = (path) => {
+        props.history.push(path);
+    };
+
     let tasks = [];
     if (!props.loading) {
-        tasks = props.tasks.sort((task1, task2) => {
-            return task1.id - task2.id;
-        }).map((task) => {
+        tasks = props.tasks.sort(taskSortASC).map((task) => {
             return (
                 <li key={task.id} className="list-group-item">
                     <div className="row">
@@ -44,7 +48,8 @@ const Tasks = (props) => {
                             <input className="mr-1" type="checkbox" checked={task.done}
                                    onChange={() => handleUpdateDone(task.id)} />
                             {task.title}
-                            <button name="edit" value={task.id} className="btn btn-outline-primary btn-sm mx-1">Edit
+                            <button name="edit" value={task.id} onClick={() => nextPath(`/update-task/${task.id}`)}
+                                    className="btn btn-outline-primary btn-sm mx-1">Edit
                             </button>
                             <button name="delete" value={task.id} onClick={handleDelete}
                                     className="btn btn-outline-dark btn-sm">Delete

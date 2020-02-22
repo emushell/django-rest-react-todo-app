@@ -11,7 +11,6 @@ import tasksReducer from './store/reducers/tasks';
 
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-// import { setAuthorisationToken } from './axios-api';
 
 const rootReducer = combineReducers({
     auth: authReducer,
@@ -19,10 +18,6 @@ const rootReducer = combineReducers({
 });
 
 const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(thunk)));
-
-// if (localStorage.token) {
-//     setAuthorisationToken(localStorage.token);
-// }
 
 const rootElement = document.getElementById('root');
 

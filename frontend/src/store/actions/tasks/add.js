@@ -27,7 +27,6 @@ export const addTask = (task) => {
         dispatch(taskAddStart());
         axios.post(TASKS_URL, task)
             .then(result => {
-                console.log(result.data);
                 let task = result.data;
                 dispatch(taskAddSuccess(task));
             })

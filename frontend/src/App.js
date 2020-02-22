@@ -8,6 +8,7 @@ import Login from './components/Login';
 import Logout from './components/Logout';
 import Tasks from './components/Tasks';
 import * as actions from './store/actions/auth';
+import TaskUpdate from './components/TaskUpdate';
 
 function App(props) {
 
@@ -22,9 +23,11 @@ function App(props) {
         </Switch>
     );
 
+
     if (props.isAuthenticated) {
         routes = (
             <Switch>
+                <Route path={'/update-task/:taskId'} component={TaskUpdate} />
                 <Route exact path={'/'} component={Tasks} />
                 <Route path={'/logout'} component={Logout} />
                 <Redirect to={'/'} />
