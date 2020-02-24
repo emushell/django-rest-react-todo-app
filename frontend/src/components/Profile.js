@@ -10,7 +10,7 @@ const Profile = (props) => {
         props.onFetchProfile();
     }, []);
 
-    if (!props.profile || props.loading) {
+    if (props.loading) {
         return <Spinner />;
     }
 

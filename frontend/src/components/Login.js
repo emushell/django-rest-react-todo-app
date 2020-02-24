@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../store/actions/auth';
+import classes from './Login.module.css';
 
-const cardStyle = {
-    'minWidth': '400px',
-    'maxWidth': '400px'
-};
+// const cardStyle = {
+//     'minWidth': '400px',
+//     'maxWidth': '400px'
+// };
 
 class Login extends Component {
     constructor(props) {
@@ -34,8 +35,9 @@ class Login extends Component {
 
     render() {
         return (
-            <div className="col-md-6 offset-md-3 d-flex justify-content-center">
-                <div className="card bg-light" style={cardStyle}>
+            <div className="card bg-light mt-1">
+                <article className={`card-body mx-auto ${classes['card-width']}`}>
+                    <h4 className="card-title mt-3 text-center">LOGIN</h4>
                     <div className="form-group input-group">
                         <div className="input-group-prepend">
                             <span className="input-group-text"> <i className="fa fa-user" /> </span>
@@ -51,10 +53,19 @@ class Login extends Component {
                                onChange={this.handleChange} />
                     </div>
                     <div className="form-group">
-                        <button type="submit" className="btn btn-primary btn-block" onClick={this.handleSubmit}>Login
+                        <button type="submit" className="btn btn-primary btn-block"
+                                onClick={this.handleSubmit}>Login
                         </button>
                     </div>
-                </div>
+                    <div className="mt-4">
+                        <div className="d-flex justify-content-center">
+                            Don't have an account? <a href="#" className="ml-2">Sign Up</a>
+                        </div>
+                        <div className="d-flex justify-content-center">
+                            Forgot password? <a href="#" className="ml-2">Reset password</a>
+                        </div>
+                    </div>
+                </article>
             </div>
         );
     }

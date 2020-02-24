@@ -4,7 +4,7 @@ import { updateObject } from '../utils';
 const initialState = {
     profile: null,
     error: null,
-    loading: false,
+    loading: true,
 };
 
 export const profileFetchStart = (state, action) => {
