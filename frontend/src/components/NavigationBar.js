@@ -7,9 +7,9 @@ const NavigationBar = (props) => {
     const userLinks = (
         <ul className="nav navbar-nav ml-auto">
             <li className="nav-item dropdown">
-                <a href="#" className="nav-link dropdown-toggle" data-toggle="dropdown">Hello, {props.userId}</a>
+                <a href="#" className="nav-link dropdown-toggle" data-toggle="dropdown">Hello, {props.username}</a>
                 <div className="dropdown-menu dropdown-menu-right">
-                    <a className="dropdown-item" href="#">Edit</a>
+                    <Link to={'profile'} className="dropdown-item">Edit</Link>
                     <Link to={'logout'} className="dropdown-item">Logout</Link>
                 </div>
             </li>
@@ -32,6 +32,7 @@ const NavigationBar = (props) => {
 const mapStateToProps = state => {
     return {
         userId: state.auth.userId,
+        username: state.auth.username,
         isAuthenticated: state.auth.authenticated
     };
 };

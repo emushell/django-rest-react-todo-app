@@ -8,13 +8,15 @@ import thunk from 'redux-thunk';
 
 import authReducer from './store/reducers/auth';
 import tasksReducer from './store/reducers/tasks';
+import profileReducer from './store/reducers/profile';
 
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
 const rootReducer = combineReducers({
     auth: authReducer,
-    tasks: tasksReducer
+    tasks: tasksReducer,
+    profile: profileReducer
 });
 
 const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(thunk)));

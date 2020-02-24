@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import * as actions from '../store/actions/tasks';
 import { taskSortASC } from '../store/utils';
 
-
 const Tasks = (props) => {
     useEffect(() => {
         props.onFetchTasks();
@@ -38,8 +37,8 @@ const Tasks = (props) => {
         props.history.push(path);
     };
 
-    let tasks = [];
-    if (!props.loading) {
+    let tasks = null;
+    if (!props.loading || props.tasks) {
         tasks = props.tasks.sort(taskSortASC).map((task) => {
             return (
                 <li key={task.id} className="list-group-item">

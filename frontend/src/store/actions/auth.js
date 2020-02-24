@@ -1,8 +1,7 @@
 import jwt from 'jwt-decode';
-import axios, { setAuthorisationToken } from '../../axios-api';
+import { setAuthorisationToken } from '../../axios-api';
 import * as actionTypes from './actionTypes';
-
-const LOGIN_URL = 'api/login/';
+import { login, logout } from '../services';
 
 export const authStart = () => {
     return {
@@ -10,11 +9,12 @@ export const authStart = () => {
     };
 };
 
-export const authSuccess = (userId) => {
+export const authSuccess = (userId, username) => {
     return {
         type: actionTypes.AUTH_SUCCESS,
         userId: userId,
-        authenticated: !!userId
+        authenticated: !!userId,
+        username: username
     };
 };
 
@@ -26,9 +26,7 @@ export const authFail = (error) => {
 };
 
 export const authLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('refreshToken');
-    setAuthorisationToken(null);
+    logout();
     return {
         type: actionTypes.AUTH_LOGOUT
     };
@@ -45,19 +43,10 @@ export const checkAuthTimeout = (expirationTime) => {
 export const authenticate = (username, password) => {
     return (dispatch) => {
         dispatch(authStart());
-        const credentials = {
-            username,
-            password
-        };
-        axios.post(LOGIN_URL, credentials)
-            .then(response => {
-                let { access: token, refresh: refreshToken } = response.data;
-                const { user_id: userId, exp: expirationTime } = jwt(token);
-                localStorage.setItem('token', token);
-                localStorage.setItem('refreshToken', refreshToken);
-                setAuthorisationToken(token);
-                dispatch(authSuccess(userId));
+        login(username, password)
+            .then(({ userId, expirationTime, username }) => {
                 dispatch(checkAuthTimeout(expirationTime));
+                dispatch(authSuccess(userId, username));
             })
             .catch(error => {
                 const { data, status, statusText } = error.response;
@@ -69,20 +58,19 @@ export const authenticate = (username, password) => {
     };
 };
 
-
 export const authCheckLoginState = () => {
     return (dispatch) => {
         const token = localStorage.getItem('token');
         if (!token) {
             dispatch(authLogout());
         } else {
-            const { exp, user_id: userId } = jwt(token);
+            const { exp, user_id: userId, username } = jwt(token);
             const expirationTime = new Date(exp * 1000);
             if (expirationTime <= new Date()) {
                 dispatch(authLogout());
             } else {
                 setAuthorisationToken(token);
-                dispatch(authSuccess(userId));
+                dispatch(authSuccess(userId, username));
             }
         }
     };

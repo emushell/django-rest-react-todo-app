@@ -3,6 +3,7 @@ import { updateObject } from '../utils';
 
 const initialState = {
     userId: null,
+    username: null,
     authenticated: false,
     error: null,
     loading: false,
@@ -24,6 +25,7 @@ export const authSuccess = (state, action) => {
         {
             userId: action.userId,
             authenticated: action.authenticated,
+            username: action.username,
             error: null,
             loading: false,
         }

@@ -7,8 +7,9 @@ import NavigationBar from './components/NavigationBar';
 import Login from './components/Login';
 import Logout from './components/Logout';
 import Tasks from './components/Tasks';
-import * as actions from './store/actions/auth';
 import TaskUpdate from './components/TaskUpdate';
+import Profile from './components/Profile';
+import * as actions from './store/actions/auth';
 
 function App(props) {
 
@@ -28,8 +29,9 @@ function App(props) {
         routes = (
             <Switch>
                 <Route path={'/update-task/:taskId'} component={TaskUpdate} />
-                <Route exact path={'/'} component={Tasks} />
+                <Route path={'/profile'} component={Profile} />
                 <Route path={'/logout'} component={Logout} />
+                <Route exact path={'/'} component={Tasks} />
                 <Redirect to={'/'} />
             </Switch>
         );
