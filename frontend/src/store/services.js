@@ -1,7 +1,14 @@
 import axios, { setAuthorisationToken } from '../axios-api';
-import { LOGIN_URL, PROFILE_URL } from './urls';
+import { LOGIN_URL, PROFILE_URL, REGISTER_URL } from './urls';
 import jwt from 'jwt-decode';
 import { convertObjectToFormData } from './utils';
+
+const postUser = (user) => {
+    return axios.post(REGISTER_URL, user)
+        .then(response => {
+            return response.data;
+        });
+};
 
 const login = (username, password) => {
 
@@ -57,5 +64,6 @@ export {
     login,
     logout,
     getProfile,
-    patchProfile
+    patchProfile,
+    postUser
 };

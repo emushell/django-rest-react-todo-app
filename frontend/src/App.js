@@ -4,6 +4,7 @@ import { Route, Switch, withRouter, Redirect } from 'react-router-dom';
 
 import Layout from './components/Layout';
 import NavigationBar from './components/NavigationBar';
+import Registration from './components/Registration';
 import Login from './components/Login';
 import Logout from './components/Logout';
 import Tasks from './components/Tasks';
@@ -20,6 +21,7 @@ function App(props) {
     let routes = (
         <Switch>
             <Route path="/login" component={Login} />
+            <Route path="/register" component={Registration} />
             <Redirect to={'/login'} />
         </Switch>
     );

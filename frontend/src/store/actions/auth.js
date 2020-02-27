@@ -50,7 +50,6 @@ export const authenticate = (username, password) => {
                 dispatch(authSuccess(userId, username));
             })
             .catch(error => {
-                console.log(error);
                 const { data, status, statusText } = error.response;
                 let errorResponse = {
                     data, status, statusText

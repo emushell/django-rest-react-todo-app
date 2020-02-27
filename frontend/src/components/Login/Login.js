@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../../store/actions/auth';
 import classes from './Login.module.css';
+import { Link } from 'react-router-dom';
 
 class Login extends Component {
     constructor(props) {
@@ -54,7 +55,7 @@ class Login extends Component {
                     </div>
                     <div className="mt-4">
                         <div className="d-flex justify-content-center">
-                            Don't have an account? <a href="#" className="ml-2">Sign Up</a>
+                            Don't have an account? <Link to="/register" className="ml-2">Sign Up</Link>
                         </div>
                         <div className="d-flex justify-content-center">
                             Forgot password? <a href="#" className="ml-2">Reset password</a>

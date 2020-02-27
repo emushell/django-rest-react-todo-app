@@ -94,7 +94,6 @@ const Profile = (props) => {
             ...newProfile,
             [name]: value
         });
-        console.log(name, value, newProfile);
     };
 
     const handleSaveProfile = (event) => {
