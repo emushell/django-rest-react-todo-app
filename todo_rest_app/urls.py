@@ -25,7 +25,7 @@ urlpatterns = [
     path('api/', include('users.urls')),
 
     # this is needed in order to serve media files,
-    # otherwise the catch-all will catch the request and index page will be returned.
+    # otherwise the catch-all will catch the request and index page will be served.
     *static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
 
     path('', TemplateView.as_view(template_name="index.html")),

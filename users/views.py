@@ -16,7 +16,7 @@ class ProfileList(generics.ListAPIView):
         return UserProfile.objects.filter(user=self.request.user)
 
 
-class ProfileDetail(generics.RetrieveAPIView):
+class ProfileDetail(generics.RetrieveUpdateAPIView):
     serializer_class = ProfileSerializer
     permission_classes = (IsAuthenticated, UserIsOwnerUserProfile,)
 

@@ -1,12 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import * as actions from '../store/actions/auth';
+import * as actions from '../../store/actions/auth';
 import classes from './Login.module.css';
-
-// const cardStyle = {
-//     'minWidth': '400px',
-//     'maxWidth': '400px'
-// };
 
 class Login extends Component {
     constructor(props) {

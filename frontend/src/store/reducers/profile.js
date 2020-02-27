@@ -38,6 +38,46 @@ export const profileFetchFail = (state, action) => {
     );
 };
 
+export const profilePutStart = (state, action) => {
+    return updateObject(
+        state,
+        {
+            error: null,
+            loading: true
+        }
+    );
+};
+
+export const profilePutSuccess = (state, action) => {
+    return updateObject(
+        state,
+        {
+            profile: action.profile,
+            error: null,
+            loading: false,
+        }
+    );
+};
+
+export const profilePutFail = (state, action) => {
+    return updateObject(
+        state,
+        {
+            error: action.error,
+            loading: false
+        }
+    );
+};
+
+export const profileUpdate = (state, action) => {
+    return updateObject(
+        state,
+        {
+            profile: action.profile
+        }
+    );
+
+};
 const profileReducer = (state = initialState, action) => {
     switch (action.type) {
         case actionTypes.PROFILE_FETCH_START:
@@ -46,6 +86,14 @@ const profileReducer = (state = initialState, action) => {
             return profileFetchSuccess(state, action);
         case actionTypes.PROFILE_FETCH_FAIL:
             return profileFetchFail(state, action);
+        case actionTypes.PROFILE_UPDATE:
+            return profileUpdate(state, action);
+        case actionTypes.PROFILE_PUT_START:
+            return profilePutStart(state, action);
+        case actionTypes.PROFILE_PUT_SUCCESS:
+            return profilePutSuccess(state, action);
+        case actionTypes.PROFILE_PUT_FAIL:
+            return profilePutFail(state, action);
         default:
             return state;
     }

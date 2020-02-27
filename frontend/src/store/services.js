@@ -1,6 +1,7 @@
 import axios, { setAuthorisationToken } from '../axios-api';
 import { LOGIN_URL, PROFILE_URL } from './urls';
 import jwt from 'jwt-decode';
+import { convertObjectToFormData } from './utils';
 
 const login = (username, password) => {
 
@@ -26,14 +27,35 @@ const logout = () => {
 const getProfile = () => {
     return axios.get(PROFILE_URL)
         .then(response => {
-            const profile = response.data[0];
-            return profile;
+            return response.data[0];
         });
 };
 
+const patchProfile = (profile) => {
+
+    let data, profileId, header;
+    if (profile.profile_pic && (profile.profile_pic instanceof File)) {
+        data = convertObjectToFormData(profile);
+        profileId = data.get('id');
+        header = {
+            headers: {
+                'content-type': 'multipart/form-data'
+            }
+        };
+    } else {
+        data = { ...profile };
+        profileId = data.id;
+    }
+
+    return axios.patch(PROFILE_URL + `${profileId}/`, data, header)
+        .then(response => {
+            return response.data;
+        });
+};
 
 export {
     login,
     logout,
-    getProfile
+    getProfile,
+    patchProfile
 };
