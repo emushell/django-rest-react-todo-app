@@ -32,10 +32,12 @@ class UserProfileRegistrationManager(models.Manager):
         """
         Create user and it's linked user profile.
         """
-        password = data.pop('password')
-        user = User(**data)
-        user.set_password(password)
-        user.save()
+        # password = data.pop('password')
+        # user = User(**data)
+        # user.set_password(password)
+        # user.save()
+
+        user = User.objects.create_user(**data)
 
         user_profile = self.create_profile(user)
 
