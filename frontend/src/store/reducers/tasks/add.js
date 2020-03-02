@@ -1,14 +1,20 @@
 import { updateObject } from '../../utils';
 
 export const taskAddStart = (state, action) => {
-    return state;
+    return updateObject(
+        state,
+        {
+            loading: true
+        }
+    );
 };
 
 export const taskAddSuccess = (state, action) => {
     return updateObject(
         state,
         {
-            tasks: [...state.tasks, action.task]
+            tasks: [...state.tasks, action.task],
+            loading: false
         }
     );
 };
@@ -17,6 +23,7 @@ export const taskAddFail = (state, action) => {
     return updateObject(
         state,
         {
-            error: action.error
+            error: action.error,
+            loading: false
         });
 };

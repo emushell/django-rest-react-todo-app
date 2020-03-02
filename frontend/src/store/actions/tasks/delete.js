@@ -5,20 +5,23 @@ import { fetchTasks } from './fetchAll';
 
 export const taskDeleteStart = () => {
     return {
-        type: actionTypes.TASK_DELETE_START
+        type: actionTypes.TASK_DELETE_START,
+        loading: true
     };
 };
 
 export const taskDeleteSuccess = () => {
     return {
-        type: actionTypes.TASK_DELETE_SUCCESS
+        type: actionTypes.TASK_DELETE_SUCCESS,
+        loading: false
     };
 };
 
 export const taskDeleteFail = (error) => {
     return {
         type: actionTypes.TASK_DELETE_FAIL,
-        error: error
+        error: error,
+        loading: false
     };
 };
 

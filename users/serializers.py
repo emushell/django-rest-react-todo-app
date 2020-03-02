@@ -25,6 +25,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 #         model = Profile
 #         fields = '__all__'
 
+
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField(
         required=True,
@@ -44,8 +45,8 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             'username': validated_data.get('username'),
             'email': validated_data.get('email'),
             'password': validated_data.get('password'),
-            'first_name': validated_data.get('first_name'),
-            'last_name': validated_data.get('last_name')
+            # 'first_name': validated_data.get('first_name'),
+            # 'last_name': validated_data.get('last_name')
         }
 
         user = UserProfile.objects.create_user_profile(

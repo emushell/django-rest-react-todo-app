@@ -10,7 +10,7 @@ const Logout = (props) => {
     }, []);
 
     return (
-        <Redirect to={'/'} />
+        <Redirect to={'/login'} />
     );
 
 };

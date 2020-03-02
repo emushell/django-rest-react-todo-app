@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import LoadingOverlay from 'react-loading-overlay';
+
 
 import { Input } from '../Input';
 import * as actions from '../../store/actions/register';
@@ -70,11 +72,10 @@ const Registration = (props) => {
             ...user,
             [name]: value
         });
-        console.log(name, value);
     };
 
     const handleCreateAccount = (event) => {
-        props.onRegisterUser(user);
+        props.onRegisterUser(user, props.history);
     };
 
     const controlsArray = Object.keys(controls).map(key => {
@@ -98,20 +99,27 @@ const Registration = (props) => {
     });
 
     return (
-        <div className="card bg-light mt-1">
-            <article className="card-body mx-auto" style={classes.cardWidth}>
-                <h4 className="card-title mt-3 text-center">Create Account</h4>
-                {form}
-                <div className="form-group">
-                    <button className="btn btn-primary btn-block" onClick={handleCreateAccount}>Create Account</button>
-                </div>
-                <div className="mt-4">
-                    <div className="d-flex justify-content-center">
-                        Already have an account? <Link to="/login" className="ml-2">Login</Link>
+        <LoadingOverlay
+            active={props.loading}
+            spinner
+            text='Creating account...'
+        >
+            <div className="card bg-light mt-1">
+                <article className="card-body mx-auto" style={classes.cardWidth}>
+                    <h4 className="card-title mt-3 text-center">Create Account</h4>
+                    {form}
+                    <div className="form-group">
+                        <button className="btn btn-primary btn-block" onClick={handleCreateAccount}>Create Account
+                        </button>
                     </div>
-                </div>
-            </article>
-        </div>
+                    <div className="mt-4">
+                        <div className="d-flex justify-content-center">
+                            Already have an account? <Link to="/login" className="ml-2">Login</Link>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </LoadingOverlay>
     );
 };
 
@@ -123,7 +131,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onRegisterUser: (user) => dispatch(actions.registerUser(user))
+        onRegisterUser: (user, history) => dispatch(actions.registerUser(user, history))
     };
 };
 

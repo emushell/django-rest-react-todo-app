@@ -20,13 +20,13 @@ export const registerFail = (error) => {
     };
 };
 
-export const registerUser = (user) => {
+export const registerUser = (user, history) => {
     return dispatch => {
         dispatch(registerStart());
         postUser(user)
             .then(data => {
-                console.log(data);
                 dispatch(registerSuccess());
+                history.push('/');
             })
             .catch(error => {
                 const { data, status, statusText } = error.response;

@@ -12,32 +12,50 @@ import TaskUpdate from './components/TaskUpdate';
 import Profile from './components/Profile';
 import * as actions from './store/actions/auth';
 
+
+const PublicRoute = ({ isAuthenticated, ...props }) => {
+    return (
+        !isAuthenticated
+            ? <Route {...props} />
+            : <Redirect to={{
+                pathname: '/',
+                state: { from: props.location }
+            }} />);
+};
+
+const PrivateRoute = ({ isAuthenticated, ...props }) => {
+    return (
+        isAuthenticated
+            ? <Route {...props} />
+            : <Redirect to={{
+                pathname: '/login',
+                state: { from: props.location }
+            }} />);
+};
+
 function App(props) {
 
     useEffect(() => {
         props.onCheckLoginState();
+
+        // This is needed in order if the path for the page is manually typed or
+        // the page is fully refreshed. So the redirect routes work as needed.
+        let { location } = props;
+        let { from } = { from: { pathname: location.pathname } };
+        props.history.replace(from);
+
     }, []);
 
     let routes = (
         <Switch>
-            <Route path="/login" component={Login} />
-            <Route path="/register" component={Registration} />
-            <Redirect to={'/login'} />
+            <PublicRoute isAuthenticated={props.isAuthenticated} path="/login" component={Login} />
+            <PublicRoute isAuthenticated={props.isAuthenticated} path="/register" component={Registration} />
+            <PrivateRoute isAuthenticated={props.isAuthenticated} path="/update-task/:taskId" component={TaskUpdate} />
+            <PrivateRoute isAuthenticated={props.isAuthenticated} path="/profile" component={Profile} />
+            <PrivateRoute isAuthenticated={props.isAuthenticated} path="/logout" component={Logout} />
+            <PrivateRoute isAuthenticated={props.isAuthenticated} path="/" component={Tasks} />
         </Switch>
     );
-
-
-    if (props.isAuthenticated) {
-        routes = (
-            <Switch>
-                <Route path={'/update-task/:taskId'} component={TaskUpdate} />
-                <Route path={'/profile'} component={Profile} />
-                <Route path={'/logout'} component={Logout} />
-                <Route exact path={'/'} component={Tasks} />
-                <Redirect to={'/'} />
-            </Switch>
-        );
-    }
 
     return (
         <Layout>
@@ -55,7 +73,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onCheckLoginState: () => dispatch(actions.authCheckLoginState())
+        onCheckLoginState: (history) => dispatch(actions.authCheckLoginState(history))
     };
 };
 

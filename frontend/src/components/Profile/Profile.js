@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import * as actions from '../store/actions/profile';
 import { connect } from 'react-redux';
-import Spinner from './Spinner/Spinner';
+import LoadingOverlay from 'react-loading-overlay';
+
+// import Spinner from './Spinner/Spinner';
+
+import * as actions from '../../store/actions/profile';
+import { Input } from '../Input';
 import classes from './Profile.module.css';
-import { Input } from './Input';
 
 const Profile = (props) => {
 
@@ -104,7 +107,14 @@ const Profile = (props) => {
     };
 
     if (props.loading) {
-        return <Spinner />;
+        // return <Spinner />;
+        return (
+            <LoadingOverlay
+                active={props.loading}
+                spinner
+                text='Loading profile...'
+            />
+        );
     }
 
     const controlsArray = Object.keys(controls).map(key => {
@@ -132,7 +142,6 @@ const Profile = (props) => {
                     />
                 </div>
             </div>
-
         );
     });
 

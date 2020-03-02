@@ -41,7 +41,7 @@ export const checkAuthTimeout = (expirationTime) => {
     };
 };
 
-export const authenticate = (username, password) => {
+export const authenticate = (username, password, history) => {
     return (dispatch) => {
         dispatch(authStart());
         login(username, password)

@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+import LoadingOverlay from 'react-loading-overlay';
+
+
 import * as actions from '../../store/actions/auth';
 import classes from './Login.module.css';
-import { Link } from 'react-router-dom';
 
 class Login extends Component {
     constructor(props) {
@@ -31,38 +34,44 @@ class Login extends Component {
 
     render() {
         return (
-            <div className="card bg-light mt-1">
-                <article className={`card-body mx-auto ${classes['card-width']}`}>
-                    <h4 className="card-title mt-3 text-center">LOGIN</h4>
-                    <div className="form-group input-group">
-                        <div className="input-group-prepend">
-                            <span className="input-group-text"> <i className="fa fa-user" /> </span>
+            <LoadingOverlay
+                active={this.props.loading}
+                spinner
+                text='Logging in...'
+            >
+                <div className="card bg-light mt-1">
+                    <article className={`card-body mx-auto ${classes['card-width']}`}>
+                        <h4 className="card-title mt-3 text-center">LOGIN</h4>
+                        <div className="form-group input-group">
+                            <div className="input-group-prepend">
+                                <span className="input-group-text"> <i className="fa fa-user" /> </span>
+                            </div>
+                            <input className="form-control" type="text" name="username" placeholder="Username"
+                                   onChange={this.handleChange} />
                         </div>
-                        <input className="form-control" type="text" name="username" placeholder="Username"
-                               onChange={this.handleChange} />
-                    </div>
-                    <div className="form-group input-group">
-                        <div className="input-group-prepend">
-                            <span className="input-group-text"> <i className="fa fa-lock" /> </span>
+                        <div className="form-group input-group">
+                            <div className="input-group-prepend">
+                                <span className="input-group-text"> <i className="fa fa-lock" /> </span>
+                            </div>
+                            <input className="form-control" type="password" name="password" placeholder="Password"
+                                   onChange={this.handleChange} />
                         </div>
-                        <input className="form-control" type="password" name="password" placeholder="Password"
-                               onChange={this.handleChange} />
-                    </div>
-                    <div className="form-group">
-                        <button type="submit" className="btn btn-primary btn-block"
-                                onClick={this.handleSubmit}>Login
-                        </button>
-                    </div>
-                    <div className="mt-4">
-                        <div className="d-flex justify-content-center">
-                            Don't have an account? <Link to="/register" className="ml-2">Sign Up</Link>
+                        <div className="form-group">
+                            <button type="submit" className="btn btn-primary btn-block"
+                                    onClick={this.handleSubmit}>Login
+                            </button>
                         </div>
-                        <div className="d-flex justify-content-center">
-                            Forgot password? <a href="#" className="ml-2">Reset password</a>
+                        <div className="mt-4">
+                            <div className="d-flex justify-content-center">
+                                Don't have an account? <Link to="/register" className="ml-2">Sign Up</Link>
+                            </div>
+                            <div className="d-flex justify-content-center">
+                                Forgot password? <a href="#" className="ml-2">Reset password</a>
+                            </div>
                         </div>
-                    </div>
-                </article>
-            </div>
+                    </article>
+                </div>
+            </LoadingOverlay>
         );
     }
 }
@@ -70,7 +79,8 @@ class Login extends Component {
 const mapStateToProps = state => {
     return {
         userId: state.auth.userId,
-        isAuthenticated: state.auth.authenticated
+        isAuthenticated: state.auth.authenticated,
+        loading: state.auth.loading
     };
 };
 
