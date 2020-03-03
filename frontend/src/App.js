@@ -5,6 +5,7 @@ import { Route, Switch, withRouter, Redirect } from 'react-router-dom';
 import Layout from './components/Layout';
 import NavigationBar from './components/NavigationBar';
 import Registration from './components/Registration';
+import EmailVerification from './components/EmailVerification';
 import Login from './components/Login';
 import Logout from './components/Logout';
 import Tasks from './components/Tasks';
@@ -12,6 +13,9 @@ import TaskUpdate from './components/TaskUpdate';
 import Profile from './components/Profile';
 import * as actions from './store/actions/auth';
 
+// TODO: fix all loading overlays, example: profile page
+// TODO: display error messages
+// TODO: create tests
 
 const PublicRoute = ({ isAuthenticated, ...props }) => {
     return (
@@ -43,13 +47,14 @@ function App(props) {
         let { location } = props;
         let { from } = { from: { pathname: location.pathname } };
         props.history.replace(from);
-
     }, []);
 
     let routes = (
         <Switch>
             <PublicRoute isAuthenticated={props.isAuthenticated} path="/login" component={Login} />
             <PublicRoute isAuthenticated={props.isAuthenticated} path="/register" component={Registration} />
+            <PublicRoute isAuthenticated={props.isAuthenticated} path="/email-verification/:token"
+                         component={EmailVerification} />
             <PrivateRoute isAuthenticated={props.isAuthenticated} path="/update-task/:taskId" component={TaskUpdate} />
             <PrivateRoute isAuthenticated={props.isAuthenticated} path="/profile" component={Profile} />
             <PrivateRoute isAuthenticated={props.isAuthenticated} path="/logout" component={Logout} />

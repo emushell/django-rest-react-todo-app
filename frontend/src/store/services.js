@@ -1,5 +1,5 @@
 import axios, { setAuthorisationToken } from '../axios-api';
-import { LOGIN_URL, PROFILE_URL, REGISTER_URL } from './urls';
+import { LOGIN_URL, PROFILE_URL, REGISTER_URL, VERIFY_EMAIL_URL } from './urls';
 import jwt from 'jwt-decode';
 import { convertObjectToFormData } from './utils';
 
@@ -60,10 +60,22 @@ const patchProfile = (profile) => {
         });
 };
 
+
+const verifyEmail = (token) => {
+    return axios.get(VERIFY_EMAIL_URL + `${token}/`)
+        .then(
+            response => {
+                return response;
+            }
+        );
+};
+
+
 export {
     login,
     logout,
     getProfile,
     patchProfile,
-    postUser
+    postUser,
+    verifyEmail
 };
