@@ -66,7 +66,7 @@ class Login extends Component {
                                 Don't have an account? <Link to="/register" className="ml-2">Sign Up</Link>
                             </div>
                             <div className="d-flex justify-content-center">
-                                Forgot password? <a href="#" className="ml-2">Reset password</a>
+                                Forgot password? <Link to="/password-reset" className="ml-2">Reset password</Link>
                             </div>
                         </div>
                     </article>

@@ -75,6 +75,7 @@ const Registration = (props) => {
     };
 
     const handleCreateAccount = (event) => {
+        event.preventDefault();
         props.onRegisterUser(user, props.history);
     };
 
