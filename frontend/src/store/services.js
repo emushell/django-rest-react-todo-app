@@ -79,6 +79,15 @@ const passwordReset = (email) => {
         );
 };
 
+const passwordResetConfirm = (form, uid, token) => {
+    return axios.post(urls.PASSWORD_RESET_CONFIRM_URL + `${uid}/${token}/`, { ...form })
+        .then(
+            response => {
+                return response;
+            }
+        );
+};
+
 export {
     login,
     logout,
@@ -86,5 +95,6 @@ export {
     patchProfile,
     postUser,
     verifyEmail,
-    passwordReset
+    passwordReset,
+    passwordResetConfirm
 };

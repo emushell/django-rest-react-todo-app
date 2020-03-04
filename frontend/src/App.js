@@ -7,6 +7,7 @@ import NavigationBar from './components/NavigationBar';
 import Registration from './components/Registration';
 import EmailVerification from './components/EmailVerification';
 import PasswordReset from './components/PasswordReset';
+import PasswordResetConfirm from './components/PasswordResetConfirm';
 import Login from './components/Login';
 import Logout from './components/Logout';
 import Tasks from './components/Tasks';
@@ -58,6 +59,8 @@ function App(props) {
             <PublicRoute isAuthenticated={props.isAuthenticated} path="/email-verification/:token"
                          component={EmailVerification} />
             <PublicRoute isAuthenticated={props.isAuthenticated} path="/password-reset" component={PasswordReset} />
+            <PublicRoute isAuthenticated={props.isAuthenticated} path="/password-reset-confirm/:uid/:token"
+                         component={PasswordResetConfirm} />
             <PrivateRoute isAuthenticated={props.isAuthenticated} path="/update-task/:taskId" component={TaskUpdate} />
             <PrivateRoute isAuthenticated={props.isAuthenticated} path="/profile" component={Profile} />
             <PrivateRoute isAuthenticated={props.isAuthenticated} path="/logout" component={Logout} />

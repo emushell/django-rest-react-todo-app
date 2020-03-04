@@ -8,7 +8,6 @@ const PasswordReset = (props) => {
 
     const handleChange = (event) => {
         const { name, value } = event.target;
-        console.log(name, value);
         setEmail(value);
     };
 
@@ -18,7 +17,7 @@ const PasswordReset = (props) => {
                 // console.log(response);
             }
         ).catch(error => {
-                console.log(error.data);
+                console.log(error.response);
             }
         );
         setSubmit(true);
