@@ -5,6 +5,7 @@ import LoadingOverlay from 'react-loading-overlay';
 
 
 import * as actions from '../../store/actions/passwordResetConfirm';
+import Card from '../Card';
 
 // TODO: error handling
 
@@ -32,7 +33,7 @@ const PasswordResetConfirm = (props) => {
             spinner
             text='Resetting password...'
         >
-            <div className="card bg-light mt-1">
+            <Card>
                 <article className="card-body">
                     <div className="row">
                         <div className="col-md-4">
@@ -64,7 +65,7 @@ const PasswordResetConfirm = (props) => {
                         </div>
                     </div>
                 </article>
-            </div>
+            </Card>
         </LoadingOverlay>
     );
 };

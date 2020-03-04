@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 
 import * as actions from '../../store/actions/passwordReset';
+import Card from '../Card';
 
 const PasswordReset = (props) => {
 
@@ -47,12 +48,12 @@ const PasswordReset = (props) => {
     }
 
     return (
-        <div className="card bg-light mt-1">
+        <Card >
             <article className="card-body">
                 <h3 className="card-title">Password reset</h3>
                 {content}
             </article>
-        </div>
+        </Card>
     );
 };
 

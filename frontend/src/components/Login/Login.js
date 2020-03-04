@@ -6,6 +6,7 @@ import LoadingOverlay from 'react-loading-overlay';
 
 import * as actions from '../../store/actions/auth';
 import classes from './Login.module.css';
+import Card from '../Card';
 
 class Login extends Component {
     constructor(props) {
@@ -39,7 +40,7 @@ class Login extends Component {
                 spinner
                 text='Logging in...'
             >
-                <div className="card bg-light mt-1">
+                <Card>
                     <article className={`card-body mx-auto ${classes['card-width']}`}>
                         <h4 className="card-title mt-3 text-center">LOGIN</h4>
                         <div className="form-group input-group">
@@ -70,7 +71,7 @@ class Login extends Component {
                             </div>
                         </div>
                     </article>
-                </div>
+                </Card>
             </LoadingOverlay>
         );
     }

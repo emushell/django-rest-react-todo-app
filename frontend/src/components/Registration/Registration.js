@@ -8,6 +8,7 @@ import { Input } from '../Input';
 import * as actions from '../../store/actions/register';
 
 import classes from './Registration.module.css';
+import Card from '../Card';
 
 // todo: add first_name & last_name into registration form
 
@@ -105,7 +106,7 @@ const Registration = (props) => {
             spinner
             text='Creating account...'
         >
-            <div className="card bg-light mt-1">
+            <Card>
                 <article className="card-body mx-auto" style={classes.cardWidth}>
                     <h4 className="card-title mt-3 text-center">Create Account</h4>
                     {form}
@@ -119,7 +120,7 @@ const Registration = (props) => {
                         </div>
                     </div>
                 </article>
-            </div>
+            </Card>
         </LoadingOverlay>
     );
 };

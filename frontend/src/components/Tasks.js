@@ -4,6 +4,7 @@ import LoadingOverlay from 'react-loading-overlay';
 
 import * as actions from '../store/actions/tasks';
 import { taskSortASC } from '../store/utils';
+import Card from './Card';
 
 const Tasks = (props) => {
     useEffect(() => {
@@ -67,21 +68,24 @@ const Tasks = (props) => {
             spinner
             text='Loading tasks...'
         >
-            <div className="row justify-content-center mt-1">
-                <div className="col-5">
-                    <input onChange={handleNewTask} value={newTask.title || ''} className="form-control form-control-sm"
-                           type="text"
-                           placeholder="Enter new task..." />
-                    <button onClick={handleAddNewTask} className="btn btn-outline-primary btn-sm btn-block mt-1"
-                            name="add">Add
-                    </button>
-                    <div className="card mt-1">
-                        <ul className="list-group list-group-flush">
-                            {tasks}
-                        </ul>
+            <Card>
+                <div className="row justify-content-center my-1">
+                    <div className="col-5">
+                        <input onChange={handleNewTask} value={newTask.title || ''}
+                               className="form-control form-control-sm"
+                               type="text"
+                               placeholder="Enter new task..." />
+                        <button onClick={handleAddNewTask} className="btn btn-outline-primary btn-sm btn-block mt-1"
+                                name="add">Add
+                        </button>
+                        <div className="card mt-1">
+                            <ul className="list-group list-group-flush">
+                                {tasks}
+                            </ul>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </Card>
         </LoadingOverlay>
     );
 };
