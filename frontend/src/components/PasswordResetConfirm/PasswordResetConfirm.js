@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { passwordResetConfirm } from '../../store/services';
+import { connect } from 'react-redux';
 import LoadingOverlay from 'react-loading-overlay';
+
+
+import * as actions from '../../store/actions/passwordResetConfirm';
 
 // TODO: error handling
 
-const PasswordResetConfirm = () => {
+const PasswordResetConfirm = (props) => {
 
     const { uid, token } = useParams();
     const [form, setForm] = useState({});
-    const [submit, setSubmit] = useState(false);
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -21,21 +23,12 @@ const PasswordResetConfirm = () => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        passwordResetConfirm(form, uid, token)
-            .then(response => {
-                console.log(response);
-                setSubmit(false);
-            })
-            .catch(error => {
-                console.log(error.response);
-                setSubmit(false);
-            });
-        setSubmit(true);
+        props.onConfirmPasswordReset(form, uid, token);
     };
 
     return (
         <LoadingOverlay
-            active={submit}
+            active={props.loading}
             spinner
             text='Resetting password...'
         >
@@ -76,4 +69,16 @@ const PasswordResetConfirm = () => {
     );
 };
 
-export default PasswordResetConfirm;
+const mapStateToProps = state => {
+    return {
+        loading: state.psswResetConfirm.loading
+    };
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        onConfirmPasswordReset: (form, uid, token) => dispatch(actions.confirmPasswordReset(form, uid, token))
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(PasswordResetConfirm);

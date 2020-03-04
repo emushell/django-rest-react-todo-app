@@ -10,6 +10,9 @@ import authReducer from './store/reducers/auth';
 import tasksReducer from './store/reducers/tasks';
 import profileReducer from './store/reducers/profile';
 import registerReducer from './store/reducers/register';
+import verifyEmailReducer from './store/reducers/verifyEmail';
+import passwordResetReducer from './store/reducers/passwordReset';
+import passwordResetConfirmReducer from './store/reducers/passwordResetConfirm';
 
 import App from './App';
 import * as serviceWorker from './serviceWorker';
@@ -18,7 +21,10 @@ const rootReducer = combineReducers({
     auth: authReducer,
     tasks: tasksReducer,
     profile: profileReducer,
-    register: registerReducer
+    register: registerReducer,
+    psswReset: passwordResetReducer,
+    psswResetConfirm: passwordResetConfirmReducer,
+    email: verifyEmailReducer
 });
 
 const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(thunk)));

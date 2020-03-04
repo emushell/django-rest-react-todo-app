@@ -1,22 +1,15 @@
 import React, { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { verifyEmail } from '../../store/services';
-import { Link } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 
-const EmailVerification = () => {
+import * as actions from '../../store/actions/verifyEmail';
+
+const EmailVerification = (props) => {
 
     const { token } = useParams();
 
     useEffect(() => {
-        verifyEmail(token)
-            .then(response => {
-                // console.log(response);
-            })
-            .catch(
-                error => {
-                    // console.log(error.data);
-                }
-            );
+        props.onVerifyEmail(token);
     }, []);
 
     return (
@@ -31,4 +24,16 @@ const EmailVerification = () => {
     );
 };
 
-export default EmailVerification;
+const mapStateToProps = state => {
+    return {
+        loading: state.email.loading
+    };
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        onVerifyEmail: (token) => dispatch(actions.verifyEmailWithToken(token))
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(EmailVerification);

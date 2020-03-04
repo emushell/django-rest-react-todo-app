@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { passwordReset } from '../../store/services';
+import { connect } from 'react-redux';
+
+import * as actions from '../../store/actions/passwordReset';
 
 const PasswordReset = (props) => {
 
     const [email, setEmail] = useState(null);
-    const [submit, setSubmit] = useState(false);
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -13,14 +14,7 @@ const PasswordReset = (props) => {
 
     const handleButtonSubmit = (event) => {
         event.preventDefault();
-        passwordReset(email).then(response => {
-                // console.log(response);
-            }
-        ).catch(error => {
-                console.log(error.response);
-            }
-        );
-        setSubmit(true);
+        props.onResetPassword(email);
     };
 
     let content = (
@@ -46,7 +40,7 @@ const PasswordReset = (props) => {
         </>
     );
 
-    if (submit) {
+    if (props.loading) {
         content = (
             <p className="card-text">Password reset email has been sent, please fallow instruction in your email.</p>
         );
@@ -62,4 +56,16 @@ const PasswordReset = (props) => {
     );
 };
 
-export default PasswordReset;
+const mapStateToProps = state => {
+    return {
+        loading: state.psswReset.loading
+    };
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        onResetPassword: (email) => dispatch(actions.resetPassword(email))
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(PasswordReset);
