@@ -19,17 +19,30 @@ class Login extends Component {
         };
     }
 
-    handleChange = (e) => {
-        const { name, value } = e.target;
+    handleChange = (event) => {
+        const { name, value } = event.target;
         this.setState({ [name]: value });
     };
 
-    handleSubmit = (e) => {
-        e.preventDefault();
+    handleSubmit = (event) => {
+        event.preventDefault();
         this.setState({ submitted: true });
         const { username, password } = this.state;
         if (username && password) {
             this.props.onAuthenticate(username, password);
+        }
+    };
+
+    displayErrorMessage = () => {
+        if (this.props.error && this.state.submitted) {
+            return (
+                <div className="alert alert-danger alert-dismissible fade show"
+                     role="alert">{this.props.error.data.detail}
+                    <button type="button" className="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            );
         }
     };
 
@@ -62,6 +75,7 @@ class Login extends Component {
                                     onClick={this.handleSubmit}>Login
                             </button>
                         </div>
+                        {this.displayErrorMessage()}
                         <div className="mt-4">
                             <div className="d-flex justify-content-center">
                                 Don't have an account? <Link to="/register" className="ml-2">Sign Up</Link>
@@ -81,7 +95,8 @@ const mapStateToProps = state => {
     return {
         userId: state.auth.userId,
         isAuthenticated: state.auth.authenticated,
-        loading: state.auth.loading
+        loading: state.auth.loading,
+        error: state.auth.error
     };
 };
 

@@ -16,6 +16,7 @@ import classes from './Registration.module.css';
 const Registration = (props) => {
 
     const [user, setUser] = useState({});
+    const [submitted, setSubmitted] = useState(false);
 
     const controls = {
         username: {
@@ -79,22 +80,39 @@ const Registration = (props) => {
     const handleCreateAccount = (event) => {
         event.preventDefault();
         props.onRegisterUser(user, props.history);
+        setSubmitted(true);
+    };
+
+    const getErrorMessage = (key) => {
+        if (props.error.data[key] instanceof Array) {
+            return props.error.data[key].map(item => {
+                return item;
+            });
+        } else if (Object.keys(props.error.data[key]).length) {
+            return Object.entries(props.error.data[key]).map(([key, value]) => {
+                return `${key}: ${value}`;
+            });
+        }
     };
 
     const controlsArray = createControlsArray(controls);
 
     const form = controlsArray.map((formElement, index) => {
         return (
-            <div key={formElement.id} className="form-group input-group">
-                <div className="input-group-prepend">
-                    <span className="input-group-text"> <i className={formElement.config.icon.className} /> </span>
+            <div key={formElement.id} className="mb-3">
+                <div className="input-group">
+                    <div className="input-group-prepend">
+                        <span className="input-group-text"> <i className={formElement.config.icon.className} /> </span>
+                    </div>
+                    <Input className={formElement.config.className}
+                           elementConfig={formElement.config.elementConfig}
+                           value={formElement.config.value}
+                           name={formElement.config.name}
+                           onChange={handleChange}
+                    />
                 </div>
-                <Input className={formElement.config.className}
-                       elementConfig={formElement.config.elementConfig}
-                       value={formElement.config.value}
-                       name={formElement.config.name}
-                       onChange={handleChange}
-                />
+                {(props.error && props.error.data[formElement.config.name] && submitted) &&
+                <small className="form-text text-danger">{getErrorMessage(formElement.config.name)}</small>}
             </div>
         );
     });
@@ -126,7 +144,8 @@ const Registration = (props) => {
 
 const mapStateToProps = state => {
     return {
-        loading: state.register.loading
+        loading: state.register.loading,
+        error: state.register.error
     };
 };
 
