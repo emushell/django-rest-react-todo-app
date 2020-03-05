@@ -4,11 +4,12 @@ import { connect } from 'react-redux';
 import LoadingOverlay from 'react-loading-overlay';
 
 
+import Card from '../Card';
 import { Input } from '../Input';
 import * as actions from '../../store/actions/register';
+import { createControlsArray } from '../../store/utils';
 
 import classes from './Registration.module.css';
-import Card from '../Card';
 
 // todo: add first_name & last_name into registration form
 
@@ -80,9 +81,7 @@ const Registration = (props) => {
         props.onRegisterUser(user, props.history);
     };
 
-    const controlsArray = Object.keys(controls).map(key => {
-        return { id: key, config: controls[key] };
-    });
+    const controlsArray = createControlsArray(controls);
 
     const form = controlsArray.map((formElement, index) => {
         return (

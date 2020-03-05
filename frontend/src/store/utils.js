@@ -20,3 +20,9 @@ export const convertObjectToFormData = (obj) => {
     }
     return form;
 };
+
+export const createControlsArray = (controls) => {
+    return Object.keys(controls).map(key => {
+        return { id: key, config: controls[key] };
+    });
+};

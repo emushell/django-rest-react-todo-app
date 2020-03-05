@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import LoadingOverlay from 'react-loading-overlay';
 
-// import Spinner from './Spinner/Spinner';
-
-import * as actions from '../../store/actions/profile';
+import Card from '../Card';
 import { Input } from '../Input';
+import * as actions from '../../store/actions/profile';
+import ProfileSkeleton from './skeleton/ProfileSkeleton';
 import classes from './Profile.module.css';
 
 const Profile = (props) => {
@@ -107,13 +106,8 @@ const Profile = (props) => {
     };
 
     if (props.loading) {
-        // return <Spinner />;
         return (
-            <LoadingOverlay
-                active={props.loading}
-                spinner
-                text='Loading profile...'
-            />
+            <ProfileSkeleton />
         );
     }
 
@@ -148,16 +142,16 @@ const Profile = (props) => {
     return (
         <div className="row">
             <div className="col-md-3">
-                <div className="card bg-light mt-1">
+                <Card>
                     <div className="card-body">
                         <h4 style={{ 'textAlign': 'center' }}>Account Settings</h4>
                         <hr />
                         <img className={classes['profile-pic']} src={props.profile.profile_pic} />
                     </div>
-                </div>
+                </Card>
             </div>
             <div className="col-md-9">
-                <div className="card bg-light mt-1">
+                <Card>
                     <div className="card-body">
                         <div className="row">
                             <div className="col-sm-12">
@@ -180,7 +174,7 @@ const Profile = (props) => {
                             </div>
                         </div>
                     </div>
-                </div>
+                </Card>
             </div>
         </div>
     );

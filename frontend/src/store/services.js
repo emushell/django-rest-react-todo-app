@@ -1,6 +1,6 @@
+import jwt from 'jwt-decode';
 import axios, { setAuthorisationToken } from '../axios-api';
 import * as urls from './urls';
-import jwt from 'jwt-decode';
 import { convertObjectToFormData } from './utils';
 
 const postUser = (user) => {

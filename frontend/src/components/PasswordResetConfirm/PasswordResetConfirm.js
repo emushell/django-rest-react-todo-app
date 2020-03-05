@@ -6,26 +6,73 @@ import LoadingOverlay from 'react-loading-overlay';
 
 import * as actions from '../../store/actions/passwordResetConfirm';
 import Card from '../Card';
+import { Input } from '../Input';
+import { createControlsArray } from '../../store/utils';
 
 // TODO: error handling
 
 const PasswordResetConfirm = (props) => {
 
     const { uid, token } = useParams();
-    const [form, setForm] = useState({});
+    const [passwordForm, setPasswordForm] = useState({});
+
+    const controls = {
+        password: {
+            elementConfig: {
+                type: 'password',
+                placeholder: 'New Password...'
+            },
+            value: '',
+            className: 'form-control',
+            name: 'new_password',
+            icon: {
+                className: 'fa fa-lock'
+            }
+        },
+        password2: {
+            elementConfig: {
+                type: 'password',
+                placeholder: 'Re-enter new password...'
+            },
+            value: '',
+            className: 'form-control',
+            name: 'new_password2',
+            icon: {
+                className: 'fa fa-lock'
+            }
+        }
+    };
 
     const handleChange = (event) => {
         const { name, value } = event.target;
-        setForm({
-            ...form,
+        setPasswordForm({
+            ...passwordForm,
             [name]: value
         });
     };
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        props.onConfirmPasswordReset(form, uid, token);
+        props.onConfirmPasswordReset(passwordForm, uid, token);
     };
+
+    const controlsArray = createControlsArray(controls);
+
+    const form = controlsArray.map((formElement, index) => {
+        return (
+            <div key={formElement.id} className="form-group input-group">
+                <div className="input-group-prepend">
+                    <span className="input-group-text"> <i className={formElement.config.icon.className} /> </span>
+                </div>
+                <Input className={formElement.config.className}
+                       elementConfig={formElement.config.elementConfig}
+                       value={formElement.config.value}
+                       name={formElement.config.name}
+                       onChange={handleChange}
+                />
+            </div>
+        );
+    });
 
     return (
         <LoadingOverlay
@@ -39,24 +86,7 @@ const PasswordResetConfirm = (props) => {
                         <div className="col-md-4">
                             <h3 className="card-title">Password reset</h3>
                             <p>Enter the new password... {uid} {token}</p>
-                            <div className="form-group input-group">
-                                <div className="input-group-prepend">
-                                    <span className="input-group-text"> <i className="fa fa-lock" /> </span>
-                                </div>
-                                <input className="form-control" type="password"
-                                       name="new_password"
-                                       placeholder="New Password..."
-                                       onChange={handleChange} />
-                            </div>
-                            <div className="form-group input-group">
-                                <div className="input-group-prepend">
-                                    <span className="input-group-text"> <i className="fa fa-lock" /> </span>
-                                </div>
-                                <input className="form-control" type="password"
-                                       name="new_password2"
-                                       placeholder="Re-enter new password..."
-                                       onChange={handleChange} />
-                            </div>
+                            {form}
                             <div className="form-group">
                                 <button type="submit" className="btn btn-primary btn-block"
                                         onClick={handleSubmit}>Submit

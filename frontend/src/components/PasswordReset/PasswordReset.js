@@ -7,6 +7,7 @@ import Card from '../Card';
 const PasswordReset = (props) => {
 
     const [email, setEmail] = useState(null);
+    const [submitted, setSubmitted] = useState(false);
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -16,6 +17,7 @@ const PasswordReset = (props) => {
     const handleButtonSubmit = (event) => {
         event.preventDefault();
         props.onResetPassword(email);
+        setSubmitted(true);
     };
 
     let content = (
@@ -41,14 +43,14 @@ const PasswordReset = (props) => {
         </>
     );
 
-    if (props.loading) {
+    if (submitted) {
         content = (
             <p className="card-text">Password reset email has been sent, please fallow instruction in your email.</p>
         );
     }
 
     return (
-        <Card >
+        <Card>
             <article className="card-body">
                 <h3 className="card-title">Password reset</h3>
                 {content}
