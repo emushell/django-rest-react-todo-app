@@ -85,7 +85,7 @@ const PasswordResetConfirm = (props) => {
                     <div className="row">
                         <div className="col-md-4">
                             <h3 className="card-title">Password reset</h3>
-                            <p>Enter the new password... {uid} {token}</p>
+                            <p>Enter the new password...</p>
                             {form}
                             <div className="form-group">
                                 <button type="submit" className="btn btn-primary btn-block"

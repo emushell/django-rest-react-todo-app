@@ -18,6 +18,13 @@ const Tasks = (props) => {
         props.onUpdateTask({ id, title, done: !done });
     };
 
+    const handleOnClick = (event) => {
+        const { value } = event.target;
+        const taskId = parseInt(value);
+        const path = `/update-task/${taskId}`;
+        props.history.push(path);
+    };
+
     const handleDelete = (event) => {
         event.preventDefault();
         const taskId = parseInt(event.target.value);
@@ -36,10 +43,6 @@ const Tasks = (props) => {
         setNewTask({ title });
     };
 
-    const nextPath = (path) => {
-        props.history.push(path);
-    };
-
     let tasks = null;
     if (!props.loading || props.tasks) {
         tasks = props.tasks.sort(taskSortASC).map((task) => {
@@ -50,7 +53,8 @@ const Tasks = (props) => {
                             <input className="mr-1" type="checkbox" checked={task.done}
                                    onChange={() => handleUpdateDone(task.id)} />
                             {task.title}
-                            <button name="edit" value={task.id} onClick={() => nextPath(`/update-task/${task.id}`)}
+                            <button name="edit" value={task.id}
+                                    onClick={handleOnClick}
                                     className="btn btn-outline-primary btn-sm mx-1">Edit
                             </button>
                             <button name="delete" value={task.id} onClick={handleDelete}
