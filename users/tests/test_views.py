@@ -1,8 +1,10 @@
 from django.urls import reverse
 from django.contrib.auth import get_user_model
+from django.contrib.auth.tokens import default_token_generator
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+from base import utils as base_utils
 from ..models import UserProfile
 from .mixins import CreateUserProfileMixin
 
@@ -24,6 +26,19 @@ class RegistrationTestCase(APITestCase):
 
         response = self.client.post(self.register_url, data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_registration_passwords_dont_match(self):
+        data = {
+            'username': 'test-user',
+            'email': 'test@localhost.test',
+            'first_name': 'test',
+            'last_name': 'user',
+            'password': 'total-secret-password',
+            'password2': 'total-none-secret-password',
+        }
+
+        response = self.client.post(self.register_url, data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
 class UserEmailVerificationTestCase(APITestCase):
@@ -68,6 +83,51 @@ class PasswordResetViewTestCase(APITestCase):
     def test_password_reset(self):
         response = self.client.post(self.password_reset_url, {"email": self.data['email']})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_password_reset_non_existing_email(self):
+        response = self.client.post(self.password_reset_url, {"email": 'emailTest@....'})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+class PasswordResetConfirmationViewTestCase(APITestCase, CreateUserProfileMixin):
+
+    def setUp(self):
+        self.create_user_profile()
+        self.uid = base_utils.base36encode(self.user.pk)
+        self.token = default_token_generator.make_token(self.user)
+        self.password_reset_confirm_url = reverse("users:password-reset-confirm",
+                                                  kwargs={"uidb64": self.uid, "token": self.token})
+
+    def test_password_reset_confirm(self):
+        data = {
+            "new_password": 'new_test_password',
+            "new_password2": 'new_test_password',
+        }
+
+        response = self.client.post(self.password_reset_confirm_url, data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_password_reset_confirm_password_dont_match(self):
+        data = {
+            "new_password": 'new_test_password',
+            "new_password2": 'old_test_password',
+        }
+
+        response = self.client.post(self.password_reset_confirm_url, data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_password_reset_confirm_invalid_parameters(self):
+        data = {
+            "new_password": 'new_test_password',
+            "new_password2": 'new_test_password',
+        }
+
+        token = default_token_generator.make_token(self.user)
+        password_reset_confirm_url = reverse("users:password-reset-confirm",
+                                             kwargs={"uidb64": 555, "token": token})
+
+        response = self.client.post(password_reset_confirm_url, data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
 class ProfileDetailTestCase(APITestCase, CreateUserProfileMixin):

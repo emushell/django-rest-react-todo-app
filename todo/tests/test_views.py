@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+from users import models
 from ..models import Task
 from ..serializers import TaskSerializer
 from users.tests.mixins import CreateUserProfileMixin
@@ -65,11 +66,17 @@ class TaskDetailTestCase(APITestCase, CreateUserProfileMixin):
         self.assertEqual(response_data, task_serialize_data)
 
     def test_task_object_updated_authorization(self):
-        new_user = User.objects.create_user(username="test-user-2",
-                                            email="new@user.test",
-                                            password="total_secret")
+        data = {
+            "username": "test-user-2",
+            "email": "new@user.test",
+            "password": "total_secret"
+        }
+        user = User.objects.create_user(**data)
+        user_profile = models.UserProfile.objects.create(email=user.email,
+                                                         is_email_verified=True,
+                                                         user=user)
         response = self.client.post(self.login_url,
-                                    {'username': new_user.username, 'password': 'total_secret'},
+                                    {'username': user.username, 'password': 'total_secret'},
                                     format='json')
         self.client.credentials(HTTP_AUTHORIZATION="Bearer {}".format(response.data['access']))
 
@@ -94,11 +101,17 @@ class TaskDetailTestCase(APITestCase, CreateUserProfileMixin):
         self.assertEqual(response_data.get("done"), task.done)
 
     def test_task_object_delete_authorization(self):
-        new_user = User.objects.create_user(username="test-user-2",
-                                            email="new@user.test",
-                                            password="total_secret")
+        data = {
+            "username": "test-user-2",
+            "email": "new@user.test",
+            "password": "total_secret"
+        }
+        user = User.objects.create_user(**data)
+        user_profile = models.UserProfile.objects.create(email=user.email,
+                                                         is_email_verified=True,
+                                                         user=user)
         response = self.client.post(self.login_url,
-                                    {'username': new_user.username, 'password': 'total_secret'},
+                                    {'username': user.username, 'password': 'total_secret'},
                                     format='json')
         self.client.credentials(HTTP_AUTHORIZATION="Bearer {}".format(response.data['access']))
         response = self.client.delete(self.task_url)

@@ -16,6 +16,8 @@ class CreateUserProfileMixin:
                     **kwargs):
         self.user = User.objects.create(username=username, email=email, password=password, *args, **kwargs)
 
-    def create_user_profile(self):
+    def create_user_profile(self, is_email_verified=True):
         self.create_user()
-        self.user_profile = models.UserProfile.objects.create(email=self.user.email, user=self.user)
+        self.user_profile = models.UserProfile.objects.create(email=self.user.email,
+                                                              is_email_verified=is_email_verified,
+                                                              user=self.user)

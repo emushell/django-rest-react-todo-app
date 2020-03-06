@@ -11,7 +11,7 @@ class UserProfileTest(TestCase, CreateUserProfileMixin):
     """ Test module for UserProfile model"""
 
     def test_user_profile_model_created(self):
-        self.create_user_profile()
+        self.create_user_profile(is_email_verified=False)
         user_profile = models.UserProfile.objects.get(email='test@...')
         self.assertEqual(user_profile, self.user_profile)
         self.assertEqual(user_profile.is_email_verified, False)
