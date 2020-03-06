@@ -17,7 +17,8 @@ export const registerStart = (state, action) => {
 export const registerSuccess = (state, action) => {
     return updateObject(state,
         {
-            loading: false
+            loading: false,
+            error: null
         });
 };
 

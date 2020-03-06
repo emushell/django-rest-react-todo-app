@@ -7,7 +7,7 @@ import LoadingOverlay from 'react-loading-overlay';
 import Card from '../Card';
 import { Input } from '../Input';
 import * as actions from '../../store/actions/register';
-import { createControlsArray } from '../../store/utils';
+import { createControlsArray, extractErrorMessages } from '../../store/utils';
 
 import classes from './Registration.module.css';
 
@@ -83,18 +83,6 @@ const Registration = (props) => {
         setSubmitted(true);
     };
 
-    const getErrorMessage = (key) => {
-        if (props.error.data[key] instanceof Array) {
-            return props.error.data[key].map(item => {
-                return item;
-            });
-        } else if (Object.keys(props.error.data[key]).length) {
-            return Object.entries(props.error.data[key]).map(([key, value]) => {
-                return `${key}: ${value}`;
-            });
-        }
-    };
-
     const controlsArray = createControlsArray(controls);
 
     const form = controlsArray.map((formElement, index) => {
@@ -112,7 +100,7 @@ const Registration = (props) => {
                     />
                 </div>
                 {(props.error && props.error.data[formElement.config.name] && submitted) &&
-                <small className="form-text text-danger">{getErrorMessage(formElement.config.name)}</small>}
+                <small className="form-text text-danger">{extractErrorMessages(props, formElement.config.name)}</small>}
             </div>
         );
     });

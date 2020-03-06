@@ -26,3 +26,15 @@ export const createControlsArray = (controls) => {
         return { id: key, config: controls[key] };
     });
 };
+
+export const extractErrorMessages = (props, key) => {
+    if (props.error.data[key] instanceof Array) {
+        return props.error.data[key].map(item => {
+            return item;
+        });
+    } else if (Object.keys(props.error.data[key]).length) {
+        return Object.entries(props.error.data[key]).map(([key, value]) => {
+            return `${key}: ${value}`;
+        });
+    }
+};

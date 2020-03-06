@@ -4,9 +4,9 @@ import { Link } from 'react-router-dom';
 import LoadingOverlay from 'react-loading-overlay';
 
 
+import Card from '../Card';
 import * as actions from '../../store/actions/auth';
 import classes from './Login.module.css';
-import Card from '../Card';
 
 class Login extends Component {
     constructor(props) {

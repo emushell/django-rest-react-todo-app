@@ -4,7 +4,8 @@ export const taskDeleteStart = (state, action) => {
     return updateObject(
         state,
         {
-            loading: true
+            loading: true,
+            error: null
         }
     );
 };
@@ -14,7 +15,8 @@ export const taskDeleteSuccess = (state, action) => {
         state,
         {
             ...state,
-            loading: false
+            loading: false,
+            error: null
         }
     );
 };
@@ -24,6 +26,6 @@ export const taskDeleteFail = (state, action) => {
         state,
         {
             error: action.error,
-            loading: action.loading
+            loading: false
         });
 };

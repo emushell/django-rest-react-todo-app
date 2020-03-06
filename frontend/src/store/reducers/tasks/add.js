@@ -4,7 +4,8 @@ export const taskAddStart = (state, action) => {
     return updateObject(
         state,
         {
-            loading: true
+            loading: true,
+            error: null
         }
     );
 };
@@ -14,7 +15,8 @@ export const taskAddSuccess = (state, action) => {
         state,
         {
             tasks: [...state.tasks, action.task],
-            loading: false
+            loading: false,
+            error: null
         }
     );
 };

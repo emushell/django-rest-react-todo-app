@@ -25,7 +25,7 @@ export const confirmPasswordReset = (form, uid, token) => {
         dispatch(passwordResetConfirmStart());
         passwordResetConfirm(form, uid, token)
             .then(response => {
-                    dispatch(passwordResetConfirmSuccess);
+                    dispatch(passwordResetConfirmSuccess());
                 }
             )
             .catch(error => {

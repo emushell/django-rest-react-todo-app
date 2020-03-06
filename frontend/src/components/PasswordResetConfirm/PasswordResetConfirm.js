@@ -7,7 +7,7 @@ import LoadingOverlay from 'react-loading-overlay';
 import * as actions from '../../store/actions/passwordResetConfirm';
 import Card from '../Card';
 import { Input } from '../Input';
-import { createControlsArray } from '../../store/utils';
+import { createControlsArray, extractErrorMessages } from '../../store/utils';
 
 // TODO: error handling
 
@@ -60,19 +60,24 @@ const PasswordResetConfirm = (props) => {
 
     const form = controlsArray.map((formElement, index) => {
         return (
-            <div key={formElement.id} className="form-group input-group">
-                <div className="input-group-prepend">
-                    <span className="input-group-text"> <i className={formElement.config.icon.className} /> </span>
+            <div key={formElement.id} className="mb-3">
+                <div className="input-group">
+                    <div className="input-group-prepend">
+                        <span className="input-group-text"> <i className={formElement.config.icon.className} /> </span>
+                    </div>
+                    <Input className={formElement.config.className}
+                           elementConfig={formElement.config.elementConfig}
+                           value={formElement.config.value}
+                           name={formElement.config.name}
+                           onChange={handleChange}
+                    />
                 </div>
-                <Input className={formElement.config.className}
-                       elementConfig={formElement.config.elementConfig}
-                       value={formElement.config.value}
-                       name={formElement.config.name}
-                       onChange={handleChange}
-                />
+                {(props.error && props.error.data[formElement.config.name]) &&
+                <small className="form-text text-danger">{extractErrorMessages(props, formElement.config.name)}</small>}
             </div>
         );
     });
+
 
     return (
         <LoadingOverlay
@@ -87,8 +92,13 @@ const PasswordResetConfirm = (props) => {
                             <h3 className="card-title">Password reset</h3>
                             <p>Enter the new password...</p>
                             {form}
+                            {(props.error && props.error.data['non_field_errors']) &&
+                            <small className="form-text text-danger">
+                                {extractErrorMessages(props, 'non_field_errors')}
+                            </small>}
                             <div className="form-group">
-                                <button type="submit" className="btn btn-primary btn-block"
+                                <button type="submit"
+                                        className="btn btn-primary btn-block"
                                         onClick={handleSubmit}>Submit
                                 </button>
                             </div>
@@ -102,7 +112,8 @@ const PasswordResetConfirm = (props) => {
 
 const mapStateToProps = state => {
     return {
-        loading: state.psswResetConfirm.loading
+        loading: state.psswResetConfirm.loading,
+        error: state.psswResetConfirm.error
     };
 };
 
