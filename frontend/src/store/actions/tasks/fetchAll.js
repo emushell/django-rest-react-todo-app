@@ -1,7 +1,6 @@
 import * as actionTypes from '../actionTypes';
-import axios from '../../../axios-api';
+import { getAllTasks } from '../../services';
 
-import { TASKS_URL } from '../../urls';
 
 export const tasksFetchStart = () => {
     return {
@@ -26,12 +25,16 @@ export const tasksFetchFail = (error) => {
 export const fetchTasks = () => {
     return (dispatch) => {
         dispatch(tasksFetchStart());
-        axios.get(TASKS_URL)
-            .then(result => {
-                dispatch(tasksFetchSuccess(result.data));
+        return getAllTasks()
+            .then(data => {
+                dispatch(tasksFetchSuccess(data));
             })
             .catch(error => {
-                dispatch(tasksFetchFail(error));
+                const { data, status, statusText } = error.response;
+                let errorResponse = {
+                    data, status, statusText
+                };
+                dispatch(tasksFetchFail(errorResponse));
             });
     };
 };

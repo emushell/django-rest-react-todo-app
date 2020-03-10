@@ -88,6 +88,34 @@ const passwordResetConfirm = (form, uid, token) => {
         );
 };
 
+const postTask = (task) => {
+    return axios.post(urls.TASKS_URL, task)
+        .then(result => {
+            return result.data;
+        });
+};
+
+const putTask = (task) => {
+    return axios.post(urls.TASKS_URL + `${task.id}/`, { ...task })
+        .then(response => {
+            return response.data;
+        });
+};
+
+const deleteTask = (taskId) => {
+    return axios.delete(urls.TASKS_URL + `${taskId}/`)
+        .then(response => {
+            return response.data;
+        });
+};
+
+const getAllTasks = () => {
+    return axios.get(urls.TASKS_URL)
+        .then(response => {
+            return response.data;
+        });
+};
+
 export {
     login,
     logout,
@@ -96,5 +124,9 @@ export {
     postUser,
     verifyEmail,
     passwordReset,
-    passwordResetConfirm
+    passwordResetConfirm,
+    postTask,
+    putTask,
+    deleteTask,
+    getAllTasks
 };

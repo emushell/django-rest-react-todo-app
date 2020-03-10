@@ -1,7 +1,6 @@
 import * as actionTypes from '../actionTypes';
-import axios from '../../../axios-api';
-import { TASKS_URL } from '../../urls';
 import { fetchTasks } from './fetchAll';
+import * as services from '../../services';
 
 export const taskDeleteStart = () => {
     return {
@@ -28,10 +27,8 @@ export const taskDeleteFail = (error) => {
 export const deleteTask = (taskId) => {
     return (dispatch) => {
         dispatch(taskDeleteStart());
-        axios.delete(TASKS_URL + `${taskId}/`)
-            .then(result => {
-                console.log(result.data);
-                // let task = result.data;
+        return services.deleteTask(taskId)
+            .then(data => {
                 dispatch(taskDeleteSuccess());
                 return Promise.resolve();
             })

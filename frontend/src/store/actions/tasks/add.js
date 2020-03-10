@@ -1,6 +1,5 @@
 import * as actionTypes from '../actionTypes';
-import axios from '../../../axios-api';
-import { TASKS_URL } from '../../urls';
+import { postTask } from '../../services';
 
 export const taskAddStart = () => {
     return {
@@ -25,10 +24,9 @@ export const taskAddFail = (error) => {
 export const addTask = (task) => {
     return (dispatch) => {
         dispatch(taskAddStart());
-        axios.post(TASKS_URL, task)
-            .then(result => {
-                let task = result.data;
-                dispatch(taskAddSuccess(task));
+        return postTask(task)
+            .then(data => {
+                dispatch(taskAddSuccess(data));
             })
             .catch(error => {
                 const { data, status, statusText } = error.response;

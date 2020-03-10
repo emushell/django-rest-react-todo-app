@@ -1,6 +1,5 @@
 import * as actionTypes from '../actionTypes';
-import axios from '../../../axios-api';
-import { TASKS_URL } from '../../urls';
+import { putTask } from '../../services';
 
 
 export const taskUpdateStart = () => {
@@ -26,10 +25,9 @@ export const taskUpdateFail = (error) => {
 export const updateTask = (task) => {
     return (dispatch) => {
         dispatch(taskUpdateStart(task));
-        axios.put(TASKS_URL + `${task.id}/`, { ...task })
-            .then(result => {
-                let task = result.data;
-                dispatch(taskUpdateSuccess(task));
+        return putTask(task)
+            .then(data => {
+                dispatch(taskUpdateSuccess(data));
             })
             .catch(error => {
                 const { data, status, statusText } = error.response;
