@@ -38,13 +38,6 @@ export const fetchProfile = () => {
     };
 };
 
-export const profileUpdate = (profile) => {
-    return {
-        type: actionTypes.PROFILE_UPDATE,
-        profile
-    };
-};
-
 export const profilePutStart = () => {
     return {
         type: actionTypes.PROFILE_PUT_START

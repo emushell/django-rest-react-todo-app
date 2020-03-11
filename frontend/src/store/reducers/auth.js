@@ -47,7 +47,8 @@ export const authLogout = (state, action) => {
         state,
         {
             userId: null,
-            authenticated: false
+            authenticated: false,
+            username: null
         }
     );
 };

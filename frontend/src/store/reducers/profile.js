@@ -69,15 +69,6 @@ export const profilePutFail = (state, action) => {
     );
 };
 
-export const profileUpdate = (state, action) => {
-    return updateObject(
-        state,
-        {
-            profile: action.profile
-        }
-    );
-
-};
 const profileReducer = (state = initialState, action) => {
     switch (action.type) {
         case actionTypes.PROFILE_FETCH_START:
@@ -86,8 +77,6 @@ const profileReducer = (state = initialState, action) => {
             return profileFetchSuccess(state, action);
         case actionTypes.PROFILE_FETCH_FAIL:
             return profileFetchFail(state, action);
-        case actionTypes.PROFILE_UPDATE:
-            return profileUpdate(state, action);
         case actionTypes.PROFILE_PUT_START:
             return profilePutStart(state, action);
         case actionTypes.PROFILE_PUT_SUCCESS:
