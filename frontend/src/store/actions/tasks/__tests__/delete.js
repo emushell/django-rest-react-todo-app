@@ -79,8 +79,8 @@ describe('delete task actions', () => {
         return store.dispatch(actions.deleteTask(mockTaskId))
             .then(() => {
                 expect(store.getActions()).toEqual(expectedActions);
-                expect(deleteTask.mock.calls.length).toBe(1);
-                expect(deleteTask.mock.calls[0][0]).toBe(mockTaskId);
+                expect(deleteTask).toHaveBeenCalledTimes(1);
+                expect(deleteTask).toHaveBeenCalledWith(mockTaskId);
             });
     });
 

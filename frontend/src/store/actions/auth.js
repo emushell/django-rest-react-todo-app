@@ -44,7 +44,7 @@ export const checkAuthTimeout = (expirationTime) => {
 export const authenticate = (username, password, history) => {
     return (dispatch) => {
         dispatch(authStart());
-        login(username, password)
+        return login(username, password)
             .then(({ userId, expirationTime, username }) => {
                 dispatch(checkAuthTimeout(expirationTime));
                 dispatch(authSuccess(userId, username));

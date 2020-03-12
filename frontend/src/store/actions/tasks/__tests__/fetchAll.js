@@ -66,7 +66,7 @@ describe('fetchAll tasks actions', () => {
         return store.dispatch(actions.fetchTasks())
             .then(() => {
                 expect(store.getActions()).toEqual(expectedActions);
-                expect(getAllTasks.mock.calls.length).toBe(1);
+                expect(getAllTasks).toHaveBeenCalledTimes(1);
             });
     });
 });
