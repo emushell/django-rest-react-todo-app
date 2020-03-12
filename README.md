@@ -11,6 +11,8 @@ For authentication is used Django Rest Framework simplejwt.
 * **/api/token/refresh/** (User jwt token refresh endpoint)
 * **/api/email-verification/{verification_token}/** (User email verification endpoint)
 * **/api/profiles/{profile-id}/** (User profile retrieve, update and destroy endpoint)
+* **/api/password-reset/** (User password reset endpoint)
+* **/api/password-reset-confirm/{uidb64}/{token}/** (User password confirm endpoint)
 
 #### Tasks
 
@@ -29,3 +31,8 @@ For authentication is used Django Rest Framework simplejwt.
 
 ### Tests
     python manage.py test
+
+#### TODO:
+* Write tests for react frontend
+* Create custom user model, where username is email.
+* Update installation and usage description.
