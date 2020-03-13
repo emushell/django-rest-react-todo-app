@@ -21,11 +21,11 @@ export const passwordResetFail = (error) => {
 };
 
 export const resetPassword = (email) => {
-    return dispatch => {
+    return (dispatch) => {
         dispatch(passwordResetStart());
-        passwordReset(email)
+        return passwordReset(email)
             .then(response => {
-                    dispatch(passwordResetSuccess);
+                    dispatch(passwordResetSuccess());
                 }
             )
             .catch(error => {

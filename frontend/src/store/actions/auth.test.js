@@ -3,12 +3,15 @@ import thunk from 'redux-thunk';
 
 import * as types from './actionTypes';
 import * as actions from './auth';
-import { deleteTask, login, logout } from '../services';
+import { login, logout } from '../services';
+import jwt from 'jwt-decode';
 
 jest.mock('../services', () => ({
     login: jest.fn(),
     logout: jest.fn()
 }));
+
+jest.mock('jwt-decode');
 
 const middlewares = [thunk];
 const mockStore = configureMockStore(middlewares);
@@ -61,7 +64,6 @@ describe('auth actions', () => {
     });
 
     test('action:authenticate', () => {
-
         const mockUsername = 'username';
         const mockPassword = 'password';
 
@@ -92,5 +94,72 @@ describe('auth actions', () => {
                 expect(login).toHaveBeenCalledTimes(1);
                 expect(login).toHaveBeenCalledWith(mockUsername, mockPassword);
             });
+    });
+
+    test('action:authCheckLoginState - with empty token', () => {
+        Storage.prototype.getItem = jest.fn(() => null);
+
+        const expectedActions = [
+            {
+                type: types.AUTH_LOGOUT
+            }
+        ];
+
+        const store = mockStore({});
+        store.dispatch(actions.authCheckLoginState());
+        expect(store.getActions()).toEqual(expectedActions);
+        expect(Storage.prototype.getItem).toHaveBeenCalledTimes(1);
+        expect(Storage.prototype.getItem).toHaveBeenCalledWith('token');
+
+    });
+
+    test('action:authCheckLoginState - with token: expiration time expired', () => {
+        const token = 'aaaa.dddd.cccc';
+        const expectedActions = [
+            {
+                type: types.AUTH_LOGOUT
+            }
+        ];
+
+        Storage.prototype.getItem = jest.fn(() => token);
+
+        jwt.mockReturnValueOnce({
+            exp: (new Date().getTime()) / 1000,
+            user_id: 1,
+            username: 'username'
+        });
+
+        const store = mockStore({});
+        store.dispatch(actions.authCheckLoginState());
+        expect(store.getActions()).toEqual(expectedActions);
+        expect(Storage.prototype.getItem).toHaveBeenCalledTimes(1);
+        expect(Storage.prototype.getItem).toHaveBeenCalledWith('token');
+
+    });
+
+    test('action:authCheckLoginState - with token', () => {
+        const token = 'aaaa.dddd.cccc';
+        const expectedActions = [
+            {
+                type: types.AUTH_SUCCESS,
+                userId: 1,
+                username: 'username',
+                authenticated: true
+            }
+        ];
+
+        Storage.prototype.getItem = jest.fn(() => token);
+
+        jwt.mockReturnValueOnce({
+            exp: (new Date().getTime()) / 1000 + 5000,
+            user_id: 1,
+            username: 'username'
+        });
+
+        const store = mockStore({});
+        store.dispatch(actions.authCheckLoginState());
+        expect(store.getActions()).toEqual(expectedActions);
+        expect(Storage.prototype.getItem).toHaveBeenCalledTimes(1);
+        expect(Storage.prototype.getItem).toHaveBeenCalledWith('token');
     });
 });

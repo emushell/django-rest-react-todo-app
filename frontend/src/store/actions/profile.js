@@ -24,7 +24,7 @@ export const profileFetchFail = (error) => {
 export const fetchProfile = () => {
     return (dispatch) => {
         dispatch(profileFetchStart());
-        getProfile()
+        return getProfile()
             .then(profile => {
                 dispatch(profileFetchSuccess(profile));
             })
@@ -61,7 +61,7 @@ export const profilePutFail = (error) => {
 export const updateProfile = (profile) => {
     return (dispatch) => {
         dispatch(profilePutStart());
-        patchProfile(profile)
+        return patchProfile(profile)
             .then(profile => {
                 dispatch(profilePutSuccess(profile));
             })
