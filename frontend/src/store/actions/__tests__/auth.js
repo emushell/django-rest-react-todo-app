@@ -1,12 +1,12 @@
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
-import * as types from './actionTypes';
-import * as actions from './auth';
-import { login, logout } from '../services';
+import * as types from '../actionTypes';
+import * as actions from '../auth';
+import { login, logout } from '../../services';
 import jwt from 'jwt-decode';
 
-jest.mock('../services', () => ({
+jest.mock('../../services', () => ({
     login: jest.fn(),
     logout: jest.fn()
 }));

@@ -1,11 +1,11 @@
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
-import * as types from './actionTypes';
-import * as actions from './passwordResetConfirm';
-import { passwordResetConfirm } from '../services';
+import * as types from '../actionTypes';
+import * as actions from '../passwordResetConfirm';
+import { passwordResetConfirm } from '../../services';
 
-jest.mock('../services', () => ({
+jest.mock('../../services', () => ({
     passwordResetConfirm: jest.fn(),
 }));
 

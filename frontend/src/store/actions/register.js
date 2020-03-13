@@ -23,7 +23,7 @@ export const registerFail = (error) => {
 export const registerUser = (user, history) => {
     return dispatch => {
         dispatch(registerStart());
-        postUser(user)
+        return postUser(user)
             .then(data => {
                 dispatch(registerSuccess());
                 history.push('/');

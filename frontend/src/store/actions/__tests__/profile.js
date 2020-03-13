@@ -1,11 +1,11 @@
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
-import * as types from './actionTypes';
-import * as actions from './profile';
-import { getProfile, patchProfile } from '../services';
+import * as types from '../actionTypes';
+import * as actions from '../profile';
+import { getProfile, patchProfile } from '../../services';
 
-jest.mock('../services', () => ({
+jest.mock('../../services', () => ({
     getProfile: jest.fn(),
     patchProfile: jest.fn()
 
