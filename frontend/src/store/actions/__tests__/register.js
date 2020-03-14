@@ -1,15 +1,12 @@
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
-import * as types from './actionTypes';
-import * as actions from './register';
-import { postUser } from '../services';
+import * as types from '../actionTypes';
+import * as actions from '../register';
+import { postUser } from '../../services';
 
-jest.mock('../services', () => ({
+jest.mock('../../services', () => ({
     postUser: jest.fn(),
-    history: {
-        push: jest.fn()
-    }
 }));
 
 const middlewares = [thunk];
@@ -60,11 +57,14 @@ describe('register actions', () => {
         ];
 
         postUser.mockReturnValueOnce(Promise.resolve());
-        // history.mo
+
+        const history = {
+            push: jest.fn()
+        };
 
         const store = mockStore({});
 
-        return store.dispatch(actions.registerUser(mockUser))
+        return store.dispatch(actions.registerUser(mockUser, history))
             .then(() => {
                 expect(store.getActions()).toEqual(expectedActions);
                 expect(postUser).toHaveBeenCalledTimes(1);

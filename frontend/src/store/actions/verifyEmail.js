@@ -23,9 +23,9 @@ export const verifyEmailFail = (error) => {
 export const verifyEmailWithToken = (token) => {
     return dispatch => {
         dispatch(verifyEmailStart());
-        verifyEmail(token)
+        return verifyEmail(token)
             .then(response => {
-                    dispatch(verifyEmailSuccess);
+                    dispatch(verifyEmailSuccess());
                 }
             )
             .catch(error => {
