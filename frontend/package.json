@@ -42,6 +42,7 @@
     ]
   },
   "devDependencies": {
+    "jest-localstorage-mock": "^2.4.0",
     "jest-mock-axios": "^3.2.0",
     "react-app-rewired": "^2.1.5",
     "redux-mock-store": "^1.5.4",

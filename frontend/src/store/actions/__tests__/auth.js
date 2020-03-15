@@ -21,6 +21,7 @@ describe('auth actions', () => {
     beforeEach(() => {
         login.mockClear();
         logout.mockClear();
+        localStorage.getItem.mockClear()
     });
 
     test('action:start', () => {
@@ -97,8 +98,7 @@ describe('auth actions', () => {
     });
 
     test('action:authCheckLoginState - with empty token', () => {
-        Storage.prototype.getItem = jest.fn(() => null);
-
+        localStorage.getItem.mockReturnValueOnce(null);
         const expectedActions = [
             {
                 type: types.AUTH_LOGOUT
@@ -108,8 +108,8 @@ describe('auth actions', () => {
         const store = mockStore({});
         store.dispatch(actions.authCheckLoginState());
         expect(store.getActions()).toEqual(expectedActions);
-        expect(Storage.prototype.getItem).toHaveBeenCalledTimes(1);
-        expect(Storage.prototype.getItem).toHaveBeenCalledWith('token');
+        expect(localStorage.getItem).toHaveBeenCalledTimes(1);
+        expect(localStorage.getItem).toHaveBeenCalledWith('token');
 
     });
 
@@ -121,8 +121,7 @@ describe('auth actions', () => {
             }
         ];
 
-        Storage.prototype.getItem = jest.fn(() => token);
-
+        localStorage.getItem.mockReturnValueOnce(token);
         jwt.mockReturnValueOnce({
             exp: (new Date().getTime()) / 1000,
             user_id: 1,
@@ -132,8 +131,8 @@ describe('auth actions', () => {
         const store = mockStore({});
         store.dispatch(actions.authCheckLoginState());
         expect(store.getActions()).toEqual(expectedActions);
-        expect(Storage.prototype.getItem).toHaveBeenCalledTimes(1);
-        expect(Storage.prototype.getItem).toHaveBeenCalledWith('token');
+        expect(localStorage.getItem).toHaveBeenCalledTimes(1);
+        expect(localStorage.getItem).toHaveBeenCalledWith('token');
 
     });
 
@@ -148,7 +147,7 @@ describe('auth actions', () => {
             }
         ];
 
-        Storage.prototype.getItem = jest.fn(() => token);
+        localStorage.getItem.mockReturnValueOnce(token);
 
         jwt.mockReturnValueOnce({
             exp: (new Date().getTime()) / 1000 + 5000,
@@ -159,7 +158,7 @@ describe('auth actions', () => {
         const store = mockStore({});
         store.dispatch(actions.authCheckLoginState());
         expect(store.getActions()).toEqual(expectedActions);
-        expect(Storage.prototype.getItem).toHaveBeenCalledTimes(1);
-        expect(Storage.prototype.getItem).toHaveBeenCalledWith('token');
+        expect(localStorage.getItem).toHaveBeenCalledTimes(1);
+        expect(localStorage.getItem).toHaveBeenCalledWith('token');
     });
 });
