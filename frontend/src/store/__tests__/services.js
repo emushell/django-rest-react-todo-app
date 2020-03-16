@@ -1,9 +1,12 @@
 import mockAxios from 'jest-mock-axios';
-import * as services from './services';
+import jwt from 'jwt-decode';
+import * as services from '../services';
 
 
-import * as urls from './urls';
-import { convertObjectToFormData } from './utils';
+import * as urls from '../urls';
+import { convertObjectToFormData } from '../utils';
+
+jest.mock('jwt-decode');
 
 describe('testing services', () => {
 
@@ -272,5 +275,49 @@ describe('testing services', () => {
         expect(localStorage.removeItem).toHaveBeenCalledWith('refreshToken');
         expect(localStorage.removeItem).toHaveBeenCalledWith('username');
 
+    });
+
+    test('login', () => {
+
+        let thenFn = jest.fn();
+        let catchFn = jest.fn();
+
+        let credentials = {
+            username: 'username',
+            password: 'password'
+        };
+
+        services.login(credentials.username, credentials.password)
+            .then(thenFn)
+            .catch(catchFn);
+
+        expect(mockAxios.post).toHaveBeenCalledWith(urls.LOGIN_URL, credentials);
+
+        let mockJwtReturn = {
+            exp: (new Date().getTime()) / 1000 + 5000,
+            user_id: 1,
+            username: 'username'
+        };
+
+        jwt.mockReturnValueOnce(mockJwtReturn);
+
+        let responseObj = {
+            data: {
+                access: 'aaaaa',
+                refresh: 'bbbbb'
+            }
+        };
+
+        let { user_id: userId, exp: expirationTime, username } = mockJwtReturn;
+
+        mockAxios.mockResponse(responseObj);
+
+        expect(thenFn).toHaveBeenCalledWith({ userId, expirationTime, username });
+        expect(catchFn).not.toHaveBeenCalled();
+
+        expect(localStorage.setItem).toHaveBeenCalledTimes(3);
+        expect(localStorage.setItem).toHaveBeenCalledWith('token', responseObj.data.access);
+        expect(localStorage.setItem).toHaveBeenCalledWith('refreshToken', responseObj.data.refresh);
+        expect(localStorage.setItem).toHaveBeenCalledWith('username', 'username');
     });
 });
