@@ -7,9 +7,10 @@ import LoadingOverlay from 'react-loading-overlay';
 import Card from '../Card';
 import { Input } from '../Input';
 import * as actions from '../../store/actions/register';
-import { createControlsArray, extractErrorMessages } from '../../store/utils';
+import { createControlsArray } from '../../store/utils';
 
 import classes from './Registration.module.css';
+import FormFieldErrorMessage from '../FormFieldErrorMessage';
 
 // todo: add first_name & last_name into registration form
 
@@ -99,8 +100,9 @@ const Registration = (props) => {
                            onChange={handleChange}
                     />
                 </div>
-                {(props.error && props.error.data[formElement.config.name] && submitted) &&
-                <small className="form-text text-danger">{extractErrorMessages(props, formElement.config.name)}</small>}
+                <FormFieldErrorMessage error={props.error}
+                                       isFormSubmitted={submitted}
+                                       formElementName={formElement.config.name} />
             </div>
         );
     });

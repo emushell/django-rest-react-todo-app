@@ -7,9 +7,8 @@ import LoadingOverlay from 'react-loading-overlay';
 import * as actions from '../../store/actions/passwordResetConfirm';
 import Card from '../Card';
 import { Input } from '../Input';
-import { createControlsArray, extractErrorMessages } from '../../store/utils';
-
-// TODO: error handling
+import { createControlsArray } from '../../store/utils';
+import FormFieldErrorMessage from '../FormFieldErrorMessage';
 
 const PasswordResetConfirm = (props) => {
 
@@ -72,8 +71,9 @@ const PasswordResetConfirm = (props) => {
                            onChange={handleChange}
                     />
                 </div>
-                {(props.error && props.error.data[formElement.config.name]) &&
-                <small className="form-text text-danger">{extractErrorMessages(props, formElement.config.name)}</small>}
+                <FormFieldErrorMessage error={props.error}
+                                       isFormSubmitted={true}
+                                       formElementName={formElement.config.name} />
             </div>
         );
     });
@@ -92,10 +92,9 @@ const PasswordResetConfirm = (props) => {
                             <h3 className="card-title">Password reset</h3>
                             <p>Enter the new password...</p>
                             {form}
-                            {(props.error && props.error.data['non_field_errors']) &&
-                            <small className="form-text text-danger">
-                                {extractErrorMessages(props, 'non_field_errors')}
-                            </small>}
+                            <FormFieldErrorMessage error={props.error}
+                                                   isFormSubmitted={true}
+                                                   formElementName={'non_field_errors'} />
                             <div className="form-group">
                                 <button type="submit"
                                         className="btn btn-primary btn-block"
