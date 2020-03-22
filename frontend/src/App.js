@@ -15,7 +15,6 @@ import TaskUpdate from './components/TaskUpdate';
 import Profile from './components/Profile';
 import * as actions from './store/actions/auth';
 
-// TODO: display error messages
 // TODO: create tests
 // TODO: change username to be email (django/backend)
 
